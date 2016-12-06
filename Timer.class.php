@@ -7,7 +7,7 @@ class Timer {
 		$taskIndex = Worker::AddTask(function($taskIndex) use ($timeToStart, $fn) {
 			if (microtime(true)>= $timeToStart) {
 				Worker::RemoveTask($taskIndex);
-				$fn();
+				$fn($taskIndex);
 			}
 		}, true, "{$useconds}us TIMED OUT TASK");
 		return $taskIndex;
@@ -18,7 +18,7 @@ class Timer {
 		$taskIndex = Worker::AddTask(function($taskIndex) use ($timeToStart, $fn, $baseTime, &$counter, $useconds) {
 			if (microtime(true)>= $baseTime + (($useconds/1000)*$counter)) {
 				$counter++;
-				$fn();
+				$fn($taskIndex);
 			}
 		}, true, "INTERVAL TASK");
 		return $taskIndex;
