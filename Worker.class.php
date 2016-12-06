@@ -42,6 +42,9 @@ class Worker {
 		CUIF::Log("removing task #{$taskIndex} '{$task['taskName']}' ...");
 		unset(self::$_tasks[$taskIndex]);
 	}
+	static public function Clear() {
+		self::$_tasks = array();
+	}
 	static public function IsRunning() {
 		return !self::$_stopped;
 	}
