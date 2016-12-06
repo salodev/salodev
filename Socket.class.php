@@ -16,6 +16,7 @@ class Socket {
             throw new Exception($this->getErrorText(), $this->getLastError());
         }
         $this->resource = $resource;
+		$this->setNonBlock();
     }
     
     public function getLastError() {
@@ -52,6 +53,7 @@ class Socket {
             return false;
         }
         $newSocket = new Socket($newResource);
+		$newSocket->setNonBlock();
         return $newSocket;
     }
     
