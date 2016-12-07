@@ -24,7 +24,6 @@ class Worker {
 				}
 			}
 		};
-		CUIF::Log('WOKER LOOP FINISHED...');
 	}
 	static public function Stop() {
 		self::$_stopped = true;
@@ -39,7 +38,6 @@ class Worker {
 			return;
 		}
 		$task = self::$_tasks[$taskIndex];
-		CUIF::Log("removing task #{$taskIndex} '{$task['taskName']}' ...");
 		unset(self::$_tasks[$taskIndex]);
 	}
 	static public function Clear() {
