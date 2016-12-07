@@ -1,6 +1,6 @@
 <?php
 
-class Socket {
+class Socket extends Stream {
     private $resource = null;
     
     public function __construct($resource = null) {
@@ -9,6 +9,8 @@ class Socket {
         }
         $this->resource = $resource;
     }
+	
+	public function open($spec, $mode = 'r') {}
     
     public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
         $resource = socket_create($domain, $type , $protocol);
@@ -16,7 +18,7 @@ class Socket {
             throw new Exception($this->getErrorText(), $this->getLastError());
         }
         $this->resource = $resource;
-		$this->setNonBlock();
+		$this->setNonBlocking();
     }
     
     public function getLastError() {
@@ -27,11 +29,11 @@ class Socket {
         return socket_strerror($this->resource);
     }
     
-    public function setNonBlock() {
+    public function setNonBlocking() {
         socket_set_nonblock($this->resource);
     }
     
-    public function setBlock() {
+    public function setBlocking() {
         socket_set_block($this->resource);
     }
     
