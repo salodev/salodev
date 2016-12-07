@@ -5,13 +5,13 @@
  */
 class Thread {
 	static protected $_childPIDs = array();
-	static public function Fork($fnChild) {
+	static public function Fork(callable $onForked) {
 		$pid = pcntl_fork();
 		if ($pid) {
 			self::$_childPIDs[] = $pid;
 		} else {
 			self::$_childPIDs = array();
-			$fnChild();
+			$onForked();
 		}
 		return $pid;
 	}
