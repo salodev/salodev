@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * El proposito general de esta clase es encapsular ciertos metodos de un thread
+ * a fin de facilitar algunas tareas y escribir un código más semántico y elegante.
+ */
 class Thread {
 	static protected $_childPIDs = array();
 	static public function Fork($fnChild) {
@@ -13,21 +16,25 @@ class Thread {
 		return $pid;
 	}
 	
+	static public function SetSignalHandler($signos, callable $fn) {
+		if (!is_array($signos)) {
+			$signos = array($signos);
+		}
+		foreach($signos as $signo) {
+			pcntl_signal($signo, $fn);
+		}
+	}
+	
 	static public function GetPid() {
 		return posix_getpid();
 	}
     
     static public function ChangeIidentity($uid, $gid){
-        global $pidFile;
         if(!posix_setgid($gid)){
-            $this->logConsola("Unable to setgid to $gid!");
-            unlink($pidFile);
-            exit;
+            throw new Exception('Unable to change GID');
         }
         if(!posix_setuid($uid)){
-            $this->logConsola("Unable to setuid to $uid!");
-            unlink($pidFile);
-            exit;
+            throw new Exception('Unable to change UID');
         }
     }
 }
