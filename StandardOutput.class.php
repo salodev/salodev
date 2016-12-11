@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class StandardOutput extends ClientStream {
 	/**

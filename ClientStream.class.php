@@ -1,4 +1,6 @@
 <?php
+namespace salodev;
+
 /**
  * Una abstracción para los consumidores de flujo.
  */

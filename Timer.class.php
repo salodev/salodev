@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class Timer {
 	static public function TimeOut($fn, $useconds) {

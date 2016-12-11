@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class SocketServer extends Thread {
     private $_status;

@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 /**
  * El proposito general de esta clase es encapsular ciertos metodos de un thread
  * a fin de facilitar algunas tareas y escribir un código más semántico y elegante.

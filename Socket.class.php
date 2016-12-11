@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class Socket extends Stream {
     private $resource = null;

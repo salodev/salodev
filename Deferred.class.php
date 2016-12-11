@@ -1,5 +1,5 @@
 <?php
-
+namespace salodev;
 class Deferred {
 	const NO_RESULT = 0;
 	const DONE = 1;
@@ -20,7 +20,7 @@ class Deferred {
 		}
 	}
 	
-	public function reject($result) {
+	public function reject($result = null) {
 		$this->_state = Deferred::FAIL;
 		$this->_result = null;
 		foreach($this->_failFns as $fn) {
@@ -31,7 +31,7 @@ class Deferred {
 		}
 	}
 	
-	public function done($callback) {
+	public function done(callable $callback) {
 		if ($this->_state==Deferred::DONE) {
 			$callback($this->_result);
 		} else {
@@ -40,7 +40,7 @@ class Deferred {
 		return $this;
 	}
 	
-	public function fail($callback) {
+	public function fail(callable $callback) {
 		if ($this->_state==Deferred::FAIL) {
 			$callback($this->_result);
 		} else {
@@ -49,7 +49,7 @@ class Deferred {
 		return $this;		
 	}
 	
-	public function always($callback) {
+	public function always(callable $callback) {
 		if ($this->_state==Deferred::DONE || $this->_state==Deferred::FAIL) {
 			$callback($this->_result);
 		} else {

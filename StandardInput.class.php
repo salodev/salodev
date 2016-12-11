@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class StandardInput extends ClientStream{
 	/**
