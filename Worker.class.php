@@ -1,4 +1,5 @@
 <?php
+namespace salodev;
 
 class Worker {
 	static private $_stopped = true;
@@ -13,7 +14,10 @@ class Worker {
 				}
 				try {
 					$taskInfo['callback']($taskIndex);
-				} catch(Exception $e) {
+				} catch(\Exception $e) {
+					if ($taskInfo['persistent']!==true) {
+						self::removeTask($taskIndex);
+					}
 					if (!is_callable($exceptionCatcherCallback)) {
 						throw $e;
 					}
