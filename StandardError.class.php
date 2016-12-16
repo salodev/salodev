@@ -1,15 +1,15 @@
 <?php
 namespace salodev;
 
-class StandardOutput extends ClientStream {
+class StandardError extends ClientStream {
 	/**
 	 *
 	 * @var Stream
 	 */
 	protected static $_stream = null;
 	
-	public function __construct($spec = 'php://stdout', $mode = 'w') {
-		if (self::$_stream instanceof StandardOutput) {
+	public function __construct($spec = 'php://stderr', $mode = 'w') {
+		if (self::$_stream instanceof StandardError) {
 			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;

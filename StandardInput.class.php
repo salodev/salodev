@@ -7,46 +7,32 @@ class StandardInput extends ClientStream{
 	 * @var Stream
 	 */
 	protected static $_stream = null;
+	
 	/**
-	 * 
-	 * @return Stream;
+	 *
+	 * @var string
 	 */
-	protected static function _GetCreateStream() {
-		if (self::$_stream == null) {
-			self::$_stream = new StandardInput();
-			self::$_stream->setNonBlocking();
-		}
-		return self::$_stream;
-	}
+	protected static $_readBuffer = null;
 	
 	public function __construct($spec = 'php://stdin', $mode = 'r') {
+		if (self::$_stream instanceof StandardInput) {
+			throw new Exception('singleton violation');
+		}
+		self::$_stream = $this;
 		parent::__construct($spec, $mode);
 	}
-	
-	static public function SetNonBlocking() {
-		$stream = self::_GetCreateStream();
-		$stream->setNonBlocking();
-	}
-	static public function SetBlocking() {
-		$stream = self::_GetCreateStream();
-		$stream->setBlocking();
-	}
-	static public function Read() {
-		$stream = self::_GetCreateStream();
-		return $stream->read();
-	}
-	static public function ReadLineAsync($fn, $readOneTime = true) {
-		$read = null;
-		Worker::AddTask(function($taskIndex) use (&$read, $fn, $readOneTime){
-			$stream = self::_GetCreateStream();
-			$buffer = $stream->read();
-			$read .= $buffer;
-			if (strpos($buffer, "\n")!==false || strpos($buffer, "\r")!==false) {
-				$tmp = $read;
-				$read = null;
-				$fn($tmp);
-				if ($readOneTime) {
-					Worker::RemoveTask($taskIndex);
+	public function readLine(callable $fn, $readOneTime = true) {
+		Worker::AddTask(function($taskIndex) use ($fn, $readOneTime){
+			$ret = $this->read();
+			if (strlen($ret)) {
+				$this->_readBuffer .= $ret;
+				if (strpos($ret, "\n")!==false || strpos($ret, "\r")!==false) {
+					$tmp = $this->_readBuffer;
+					$this->_readBuffer = null;
+					if ($readOneTime) {
+						Worker::RemoveTask($taskIndex);
+					}
+					$fn($tmp);
 				}
 			}
 		});
