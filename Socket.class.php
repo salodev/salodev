@@ -70,13 +70,14 @@ class Socket extends Stream {
     }
     
     public function readLine(callable $callback, $readLength = 8){
-		Worker::AddTask(function() use ($callback){
+		Worker::AddTask(function($taskIndex) use ($callback){
 			$ret = $this->read(8);
 			if (strlen($ret)) {
 				$this->readBuffer .=$ret;
 				if (strpos($ret, "\n")!==false) {
 					$line = $this->readBuffer;
 					$this->readBuffer = null;
+					Worker::RemoveTask($taskIndex);
 					$callback($line, $this);
 				}
 			}
