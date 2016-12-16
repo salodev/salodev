@@ -39,7 +39,6 @@ class SocketServer {
 				Worker::AddTask(function() use ($fn, $connection) {
 					$fn($connection);
 				});
-				$connection->close();
 			}, true, 'WAITING FOR INCOMMING REQUESTS');
 		});
 	}
