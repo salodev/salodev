@@ -17,8 +17,7 @@ abstract class Stream {
 		}
 	}
 	abstract public function open($spec, $mode = 'r');
-	abstract public function read($bytes = 256);
-	abstract public function readLine($length = 255);
+	abstract public function read($bytes = 256, $type);
 	abstract public function write($content, $length = null);
 	abstract public function close();
 	abstract public function setBlocking();
