@@ -3,6 +3,7 @@ namespace salodev;
 
 class Socket extends Stream {
     private $resource = null;
+	private $readBuffer = null;
     
     public function __construct($resource = null) {
         if ($resource !== null && !is_resource($resource)) {
@@ -56,7 +57,7 @@ class Socket extends Stream {
             return false;
         }
         $newSocket = new Socket($newResource);
-		$newSocket->setNonBlock();
+		$newSocket->setNonBlocking();
         return $newSocket;
     }
     
@@ -68,16 +69,18 @@ class Socket extends Stream {
         return socket_read($this->resource, $length, $type);
     }
     
-    public function readLine($maxIterations = 1000){
-        $i = 0;
-        $content = '';
-        while(false !== ($buffer = $this->read(512)) && $i <= $maxIterations) {
-            $i++;
-            $content .= $buffer;
-            if (strpos($content, "\n") !== false || strpos($content, "\r") !== false) {
-                return $content;
-            }
-        }
+    public function readLine(callable $callback, $readLength = 8){
+		Worker::AddTask(function() use ($callback){
+			$ret = $this->read(8);
+			if (strlen($ret)) {
+				$this->readBuffer .=$ret;
+				if (strpos($ret, "\n")!==false) {
+					$line = $this->readBuffer;
+					$this->readBuffer = null;
+					$callback($line, $this);
+				}
+			}
+		});
     }
     
     public function write($buffer, $length = null) {
