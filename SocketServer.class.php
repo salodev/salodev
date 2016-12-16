@@ -36,17 +36,15 @@ class SocketServer {
 				if (!$connection) {
 					return;
 				}
-				Worker::AddTask(function() use ($fn, $connection) {
-					$fn($connection);
-				});
+				$fn($connection);
 			}, true, 'WAITING FOR INCOMMING REQUESTS');
 		});
 	}
     
-	static public function Start() {
+	static public function Start($useconds = 1) {
 		set_time_limit(0);
 		ob_implicit_flush();
 		self::LogConsole("SERVER READY. WAITING FOR CONNECTIONS");
-		Worker::Start();
+		Worker::Start($useconds);
 	}
 }
