@@ -32,9 +32,11 @@ class StandardInput extends ClientStream{
 					if ($readOneTime) {
 						Worker::RemoveTask($taskIndex);
 					}
+					$tmp = str_replace("\n", '', $tmp);
+					$tmp = str_replace("\r", '', $tmp);
 					$fn($tmp);
 				}
 			}
-		});
+		}, true, 'READ LINE FROM STANDARD INPUT');
 	}
 }

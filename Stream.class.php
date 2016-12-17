@@ -6,7 +6,7 @@ namespace salodev;
  *       y otra para el consumidor. Por el momento se usa en ambas.
  */
 abstract class Stream {
-	private $_resource = null;
+	protected $_resource = null;
 	public function __construct($spec, $mode = null) {
 		if (is_resource($spec)) {
 			$this->_resource = $spec;
