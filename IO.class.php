@@ -24,14 +24,14 @@ class IO {
 			self::$_stderr = new StandardError();
 		}
 	}
-	static public function Read(callable $onRead, $length = 8) {
+	static public function Read(callable $onRead, $length = 8, $readOneTime = true) {
 		self::_GetCreateStreams();
 		Worker::AddTask(function() use($onRead, $length){
 			$read = self::$_stdin->read($length);
 			if (strlen($read)) {
 				$onRead($read);
 			}
-		});
+		}, !$readOneTime, 'STANDARD INPUT LISTENER');
 		
 	}
 	static public function ReadLine(callable $onRead, $readOneTime = true) {
