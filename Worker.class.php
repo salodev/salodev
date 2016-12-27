@@ -4,7 +4,7 @@ namespace salodev;
 class Worker {
 	static private $_stopped = true;
 	static private $_tasks = array();
-	static public function Start($usleep = 1, $exceptionCatcherCallback = null) {
+	static public function Start($usleep = 1000, $exceptionCatcherCallback = null) {
 		self::$_stopped = false;
 		while (count(self::$_tasks)) {
 			usleep($usleep);
