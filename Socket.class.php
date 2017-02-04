@@ -7,7 +7,7 @@ class Socket extends Stream {
     
     public function __construct($resource = null) {
         if ($resource !== null && !is_resource($resource)) {
-            throw new Exception('Parameter given must be null or valid resource');
+            throw new \Exception('Parameter given must be null or valid resource');
         }
         $this->resource = $resource;
     }
@@ -17,7 +17,7 @@ class Socket extends Stream {
     public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
         $resource = socket_create($domain, $type , $protocol);
         if (!is_resource($resource)) {
-            throw new Exception($this->getErrorText(), $this->getLastError());
+            throw new \Exception($this->getErrorText(), $this->getLastError());
         }
         $this->resource = $resource;
 		$this->setNonBlocking();
