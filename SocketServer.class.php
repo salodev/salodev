@@ -17,21 +17,22 @@ class SocketServer {
 			$tries++;
 			if (!$socket->bind($address, $port)) {
 				if ($tries>10) {
-					throw new Exception("Socket bind failed after {$tries} tries: " . $socket->getErrorText());
+					throw new \Exception("Socket bind failed after {$tries} tries: " . $socket->getErrorText());
 				}
 				return;
 			}
 			Worker::RemoveTask($taskIndex); // To cancel interval.
 			if(($ret = $socket->listen(0)) < 0){
-				throw new Exception("Socket Listen failed: " . $socket->getErrorText());
+				throw new \Exception("Socket Listen failed: " . $socket->getErrorText());
 			}
+			$socket->setNonBlocking();
 			$fnOnReady($socket);
-		}, 3000);
+		}, 3000000);
 	}
     
 	static public function AddListener($address, $port, $fn){
-		self::Listen($address, $port, function(Socket $socket) use($fn, $forkable) {
-			Worker::AddTask(function() use($socket, $fn, $forkable) {
+		self::Listen($address, $port, function(Socket $socket) use($fn) {
+			Worker::AddTask(function() use($socket, $fn) {
 				$connection = $socket->accept();
 				if (!$connection) {
 					return;
