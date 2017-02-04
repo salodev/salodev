@@ -13,7 +13,7 @@ class Process {
            2 => array('pipe', 'w'),
         ), $this->_pipes, $wd, $env);
         if (!is_resource($this->_stream)) {
-            throw new Exception('Proccess can not be started.');
+            throw new \Exception('Proccess can not be started.');
         }
         stream_set_blocking($this->_pipes[0], 0);
         stream_set_blocking($this->_pipes[1], 0);
