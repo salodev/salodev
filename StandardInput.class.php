@@ -16,7 +16,7 @@ class StandardInput extends ClientStream{
 	
 	public function __construct($spec = 'php://stdin', $mode = 'r') {
 		if (self::$_stream instanceof StandardInput) {
-			throw new Exception('singleton violation');
+			throw new \Exception('singleton violation');
 		}
 		self::$_stream = $this;
 		parent::__construct($spec, $mode);
