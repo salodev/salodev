@@ -11,6 +11,7 @@ class SocketServer {
 		$socket = new Socket();
 		$socket->create(AF_INET, SOCK_STREAM, 0);
 		$socket->setOption(SOL_SOCKET, SO_REUSEADDR, 1);
+		$socket->setNonBlocking();
         
 		$tries = 0;
 		Timer::Interval(function($taskIndex) use($socket, $tries, $address, $port, $fnOnReady) {
@@ -27,17 +28,24 @@ class SocketServer {
 			}
 			$socket->setNonBlocking();
 			$fnOnReady($socket);
-		}, 3000000);
+		}, 3000);
 	}
     
 	static public function AddListener($address, $port, $fn){
 		self::Listen($address, $port, function(Socket $socket) use($fn) {
-			Worker::AddTask(function() use($socket, $fn) {
+			Worker::AddTask(function($taskIndex) use($socket, $fn) {
 				$connection = $socket->accept();
 				if (!$connection) {
 					return;
 				}
-				$fn($connection);
+				$connection->setNonBlocking();
+				// \salodev\IO::WriteLine('Luego de acceptar...');
+				try {
+					$fn($connection);
+				} catch(Exception $e) {
+					Worker::RemoveTask($taskIndex);
+					echo $e->getMessage() . "\n";
+				}
 			}, true, 'WAITING FOR INCOMMING REQUESTS');
 		});
 	}
