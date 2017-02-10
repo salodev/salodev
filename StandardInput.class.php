@@ -12,7 +12,7 @@ class StandardInput extends ClientStream{
 	 *
 	 * @var string
 	 */
-	protected static $_readBuffer = null;
+	protected $_readBuffer = null;
 	
 	public function __construct($spec = 'php://stdin', $mode = 'r') {
 		if (self::$_stream instanceof StandardInput) {
