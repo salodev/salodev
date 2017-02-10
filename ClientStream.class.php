@@ -20,6 +20,10 @@ abstract class ClientStream extends Stream {
 		fwrite($this->_resource, $content, $length);
 		return $this;
 	}
+	public function writeAndRead($content) {
+		$this->write($content);
+		return $this->read();
+	}
 	public function close() {
 		fclose($this->_resource);
 		return $this;
