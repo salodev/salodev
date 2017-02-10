@@ -16,7 +16,7 @@ class Timer {
 	static public function Interval($fn, $useconds) {
 		$baseTime = microtime(true);
 		$counter = 0;
-		$taskIndex = Worker::AddTask(function($taskIndex) use ($timeToStart, $fn, $baseTime, &$counter, $useconds) {
+		$taskIndex = Worker::AddTask(function($taskIndex) use ($fn, $baseTime, &$counter, $useconds) {
 			if (microtime(true)>= $baseTime + (($useconds/1000)*$counter)) {
 				$counter++;
 				$fn($taskIndex);
