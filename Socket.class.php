@@ -12,6 +12,10 @@ class Socket extends Stream {
         $this->resource = $resource;
     }
 	
+	public function isValidResource() {
+		return ($this->resource !== null && is_resource($this->resource));
+	}
+	
 	public function open($spec, $mode = 'r') {}
     
     public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
@@ -66,11 +70,18 @@ class Socket extends Stream {
     }
     
     public function read($length, $type = PHP_BINARY_READ) {
+		if (!$this->isValidResource()) {
+			throw new \Exception('Invalid socket resource. Connection may be expired.');
+		}
         return socket_read($this->resource, $length, $type);
     }
     
     public function readLine(callable $callback, $length = 8, $oneTime = false){
 		Worker::AddTask(function($taskIndex) use ($callback, $length, $oneTime){
+			if (!$this->isValidResource()) { // connection is closed.
+				Worker::RemoveTask($taskIndex);
+				return;
+			}
 			$ret = $this->read($length);
 			if (strlen($ret)) {
 				$this->readBuffer .=$ret;
@@ -80,13 +91,16 @@ class Socket extends Stream {
 					if ($oneTime) {
 						Worker::RemoveTask($taskIndex);
 					}
-					$callback($line, $this);
+					$callback(trim($line), $this);
 				}
 			}
-		});
+		}, true, 'SOCKET - READ LINE TASK');
     }
     
     public function write($buffer, $length = null) {
+		if (!$this->isValidResource()) {
+			throw new \Exception('Invalid socket resource. Connection may be expired.');
+		}
         if ($length===null) {
             $length = strlen($buffer);
         }
