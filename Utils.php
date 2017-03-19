@@ -20,6 +20,10 @@ class Utils {
 		return $newArray;
 	}
 	
+	static public function FillParams(array $defaultValues, array $params) {
+		return array_merge($defaultValues, $params);
+	}
+	
 	static public function RotateDate(&$date, $glue='-') {
 		$date = self::GetRotatedDate($date, $glue);
 	}
