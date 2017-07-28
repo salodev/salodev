@@ -6,6 +6,10 @@ class Utils {
 		return isset($value) ? $value : $default;
 	}
 	
+	static public function Ifempty(&$value, $default = null) {
+		return empty($value) ? $default : $value;
+	}
+	
 	/**
 	 * Return a filtered array.
 	 * @param array $params   Original assoc array
