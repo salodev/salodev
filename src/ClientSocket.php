@@ -16,11 +16,24 @@ class ClientSocket extends ClientStream {
 	public function read($bytes = 256, $type = null) {
 		return fread($this->_resource, $bytes);
 	}
+	
+	public function readAll($length, $type = PHP_BINARY_READ) {
+		$read = null;
+		while($buffer = $this->read($length, $type)) {
+			$read .= $buffer;
+			if (strpos($buffer, "\n")!==false) {
+				break;
+			}
+		}
+		return $read;
+	}
+	
 	public function readLine($length = 255) {
 		return fgets($this->_resource, $length);
 	}
 	public function write($content, $length = null) {
 		$length = $length===null ? strlen($content) : $length;
+		// echo "escribiendo '$content' ({$length})\n";
 		fwrite($this->_resource, $content, $length);
 		return $this;
 	}

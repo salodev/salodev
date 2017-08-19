@@ -73,8 +73,19 @@ class Socket extends Stream {
 		if (!$this->isValidResource()) {
 			throw new \Exception('Invalid socket resource. Connection may be expired.');
 		}
-        return socket_read($this->resource, $length, $type);
+        return @socket_read($this->resource, $length, $type);
     }
+	
+	public function readAll($length, $type = PHP_BINARY_READ) {
+		$read = null;
+		while($buffer = $this->read($length, $type)) {
+			$read .= $buffer;
+			if (strpos($buffer, "\n")!==false) {
+				break;
+			}
+		}
+		return $read;
+	}
     
     public function readLine(callable $callback, $length = 8, $oneTime = false){
 		Worker::AddTask(function($taskIndex) use ($callback, $length, $oneTime){
