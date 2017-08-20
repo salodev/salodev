@@ -21,7 +21,6 @@ use salodev\Debug\ObjectInspector\URLHandler;
  * objects we want to see.
  *
  * @author salojc2006@gmail.com
- * @version 0.2
  * @todo - Fix url crations and make it better, more intelligent, shorting length of the querystring.
  *       - Output for linux console
  *       - Add callback function to render special object types. E. g. Collections object may rendered
