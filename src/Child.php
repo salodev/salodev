@@ -19,4 +19,31 @@ class Child {
 		return $this->_pid;
 	}
 	
+	public function exited(): bool {
+		return pcntl_wifexited($this->_status);
+	}
+	
+	public function stopped(): bool {
+		return pcntl_wifstopped($this->_status);
+	}
+	
+	public function signaled(): bool {
+		return pcntl_wifsignaled($this->_status);
+	}
+	
+	public function getExitStatus(): int {
+		return pcntl_wexitstatus($this->_status);
+	}
+	
+	public function getStopSignal(): int {
+		return pcntl_wstopsig($this->_status);
+	}
+	
+	public function getSignal(): int {
+		return pcntl_wtermsig($this->_status);
+	}
+	
+	public function kill($sig): bool {
+		return posix_kill($this->_pid, $sig);
+	}
 }
