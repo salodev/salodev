@@ -5,19 +5,33 @@ namespace salodev;
  * a fin de facilitar algunas tareas y escribir un código más semántico y elegante.
  */
 class Thread {
-	static protected $_childPIDs = array();
-	static public function Fork(callable $onForked) {
+	
+	static protected $_childPIDs = [];
+	static protected $_childs    = [];
+	
+	/**
+	 * 
+	 * @param callback $onForked
+	 * @return Child
+	 */
+	static public function Fork(callable $onForked): Child {
 		$pid = pcntl_fork();
+		$child = new Child($pid);
 		if ($pid) {
 			self::$_childPIDs[] = $pid;
+			self::$_childs[] = $child;
 		} else {
-			self::$_childPIDs = array();
-			$onForked();
+			self::$_childPIDs = [];
+			self::$_childs = [];
+			$childPid = posix_getpid();
+			$onForked($childPid);
+			die(); // avoid continue on origal proccess code.
 		}
-		return $pid;
+		return $child;
 	}
 	
 	static public function SetSignalHandler($signos, callable $fn) {
+		declare(ticks = 1);
 		if (!is_array($signos)) {
 			$signos = array($signos);
 		}

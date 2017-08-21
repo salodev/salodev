@@ -55,7 +55,11 @@ class Socket extends Stream {
         return socket_listen($this->resource, $backlog);
     }
     
-    public function accept() {
+	/**
+	 * 
+	 * @return \salodev\Socket
+	 */
+    public function accept()/*: Socket*/ {
         $newResource = socket_accept($this->resource);
         if (!$newResource) {
             return false;

@@ -7,7 +7,7 @@ namespace salodev;
 class ClientSocket extends ClientStream {
 	public function open($spec, $mode = 'r') {
 		list($host,$port) = explode(':', $spec);
-		$this->_resource = fsockopen($host, $port, $errNo, $errString, 5);
+		$this->_resource = @fsockopen($host, $port, $errNo, $errString, 5);
 		if ($errNo) {
 			throw new \Exception($errString, $errNo);
 		}

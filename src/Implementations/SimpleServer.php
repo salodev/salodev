@@ -3,14 +3,25 @@
 namespace salodev\Implementations;
 
 use salodev\Socket;
+use salodev\Thread;
 use Exception;
+
+declare(ticks = 1); // It allows signal handlers run!
 
 class SimpleServer {
 	
 	static public $socket = null;
 	
 	static public function Listen(string $address, int $port, callable $onRequest, int $usleep = 1000) {
+		
+		// It makes cancellabe by CTRL+C signal
+		Thread::SetSignalHandler(SIGINT, function($signo) {
+			die();
+		});
+		
+		// For long time run
 		set_time_limit(0);
+		
 		$socket = new Socket();
 		self::$socket = $socket;
 		$socket->create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -30,10 +41,12 @@ class SimpleServer {
 				$connection->setBlocking();
 				$message = trim($connection->readAll(256, PHP_NORMAL_READ));
 				try {
-					$return = $onRequest($message);
+					$return = $onRequest($message, $connection);
 					$connection->write($return . "\n");
 				} catch (Exception $e) {
-					$connection->write('Uncatched service error.');
+					echo "Uncaught Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n";
+					echo $e->getTraceAsString();
+					$connection->write('Uncaught service error.');
 				}
 
 				$connection->close();
