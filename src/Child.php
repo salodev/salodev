@@ -43,7 +43,11 @@ class Child {
 		return pcntl_wtermsig($this->_status);
 	}
 	
-	public function kill($sig): bool {
+	public function sendSignal($sig): bool {
 		return posix_kill($this->_pid, $sig);
+	}
+	
+	public function kill(): bool {
+		return $this->sendSignal(SIGKILL);
 	}
 }
