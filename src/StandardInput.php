@@ -14,7 +14,9 @@ class StandardInput extends ClientStream{
 	 */
 	protected $_readBuffer = null;
 	
-	public function __construct($spec = 'php://stdin', $mode = 'r') {
+	public function __construct(array $options = []) {
+		$spec = 'php://stdin';
+		$mode = 'r';
 		if (self::$_stream instanceof StandardInput) {
 			throw new \Exception('singleton violation');
 		}

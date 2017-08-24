@@ -8,7 +8,9 @@ class StandardOutput extends ClientStream {
 	 */
 	protected static $_stream = null;
 	
-	public function __construct($spec = 'php://stdout', $mode = 'w') {
+	public function __construct(array $options = []) {
+		$spec = 'php://stdout';
+		$mode = 'w';
 		if (self::$_stream instanceof StandardOutput) {
 			throw new \Exception('singleton violation');
 		}

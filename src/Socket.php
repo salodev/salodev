@@ -16,7 +16,7 @@ class Socket extends Stream {
 		return ($this->resource !== null && is_resource($this->resource));
 	}
 	
-	public function open($spec, $mode = 'r') {}
+	public function open(array $options = []) {}
     
     public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
         $resource = socket_create($domain, $type , $protocol);

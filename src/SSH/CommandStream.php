@@ -1,7 +1,15 @@
 <?php
 namespace salodev\SSH;
 class CommandStream extends \salodev\ClientStream {
-	public function __construct($connection, $command, array $options = array()) {
+	
+	static public function Create($resource, array $options = []): self {
+		$options['connection'] = $resource;
+		return new self($options);
+	}
+	
+	public function __construct(array $options = []) {
+		$connection = $options['connection'] ?? null;
+		$command    = $options['command'   ] ?? null;
 		$options = array_merge(array(
 			'pty' => true,
 			'env' => array(),

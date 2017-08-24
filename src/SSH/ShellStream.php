@@ -1,7 +1,14 @@
 <?php
 namespace salodev\SSH;
 class ShellStream extends \salodev\ClientStream {
-	public function __construct($connection, array $options = array()) {
+	
+	static public function Create($resource, array $options = []): self {
+		$options['connection'] = $resource;
+		return new self($options);
+	}
+	
+	public function __construct(array $options = []) {
+		$connection = $options['connection'] ?? null;
 		$options = array_merge(array(
 			'terminalType' => 'vanilla',
 			'env' => array(),

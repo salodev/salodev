@@ -5,9 +5,20 @@ namespace salodev;
  * Una abstracción para los consumidores de flujo.
  */
 class ClientSocket extends ClientStream {
-	public function open($spec, $mode = 'r') {
-		list($host,$port) = explode(':', $spec);
-		$this->_resource = @fsockopen($host, $port, $errNo, $errString, 5);
+	
+	static public function Create(string $host, int $port, float $timeout = 5): self {
+		return new self([
+			'host' => $host,
+			'port' => $port,
+			'timeout' => $timeout,
+		]);
+	}
+	
+	public function open(array $options = []) {
+		$host = $options['host'] ?? null;
+		$port = $options['port'] ?? null;
+		$timeout = $options['timeout'] ?? 5;
+		$this->_resource = @fsockopen($host, $port, $errNo, $errString, $timeout);
 		if ($errNo) {
 			throw new \Exception($errString, $errNo);
 		}

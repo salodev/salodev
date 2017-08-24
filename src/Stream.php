@@ -7,16 +7,19 @@ namespace salodev;
  */
 abstract class Stream {
 	protected $_resource = null;
-	public function __construct($spec, $mode = null) {
-		if (is_resource($spec)) {
-			$this->_resource = $spec;
+	public function __construct(array $options = []) {
+		$resource = $options['resource'] ?? null;
+		if (is_resource($resource)) {
+			$this->_resource = $resource;
 		}
-		if (is_string($spec)) {
-			$this->open($spec, $mode);
-			$this->setNonBlocking(); // by default.
-		}
+		// if (is_string($resource)) {
+			$this->open($options);
+			if (($options['nonBlocking']??false) || !($options['blocking']??true)) {
+				$this->setNonBlocking(); // by default.
+			}
+		// }
 	}
-	abstract public function open($spec, $mode = 'r');
+	abstract public function open(array $options = []);
 	abstract public function read($bytes = 256, $type);
 	abstract public function write($content, $length = null);
 	abstract public function close();

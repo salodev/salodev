@@ -21,7 +21,7 @@ SimpleServer::Listen('127.0.0.1', 4000, function(string $msg, Socket $connection
 			});
 		});
 		sleep(1);
-		$client = new ClientSocket("127.0.0.1:{$param}" ,'rw');
+		$client = ClientSocket::Create('127.0.0.1', $param);
 		$ret = $client->writeAndRead('Tamo listo??');
 		
 		return 'Service created!. Its returned: '. $ret;

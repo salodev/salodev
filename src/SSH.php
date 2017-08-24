@@ -1,5 +1,7 @@
 <?php
 namespace salodev;
+use SSH\ShellStream;
+use SSH\CommandStream;
 class SSH {
 	private $_resource;
 	public function __construct($host, $port, array $methods = array(), array $callbacks = array()) {
@@ -23,14 +25,14 @@ class SSH {
 	/**
 	 * @return SSH\ShellStream Interactive shell stream
 	 */
-	public function interact(array $options = array()) {
-		return new SSH\ShellStream($this->_resource, $options);
+	public function interact(array $options = array()): ShellStream {
+		return ShellStream::Create($this->_resource, $options);
 	}
 	
 	/**
 	 * @return SSH\ShellStream Command interactive stream
 	 */
-	public function exec($command, array $options = array()) {
-		return new SSH\CommandStream($this->_resource, $command, $options);
+	public function exec($command, array $options = array()): CommandStream {
+		return CommandStream::Create($this->_resource, $command, $options);
 	}
 }

@@ -8,7 +8,9 @@ class StandardError extends ClientStream {
 	 */
 	protected static $_stream = null;
 	
-	public function __construct($spec = 'php://stderr', $mode = 'w') {
+	public function __construct(array $options = []) {
+		$spec = 'php://stderr';
+		$mode = 'w';
 		if (self::$_stream instanceof StandardError) {
 			throw new \Exception('singleton violation');
 		}
