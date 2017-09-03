@@ -1,6 +1,8 @@
 <?php
 namespace salodev;
-
+use salodev\Exceptions\Socket\ConnectionRefused;
+use salodev\Exceptions\Socket\ConnectionTimedOut;
+use salodev\Exceptions\Socket as SocketException;
 /**
  * Una abstracción para los consumidores de flujo.
  */
@@ -20,7 +22,13 @@ class ClientSocket extends ClientStream {
 		$timeout = $options['timeout'] ?? 5;
 		$this->_resource = @fsockopen($host, $port, $errNo, $errString, $timeout);
 		if ($errNo) {
-			throw new \Exception($errString, $errNo);
+			if ($errNo == SOCKET_ECONNREFUSED) {
+				throw new ConnectionRefused;
+			}
+			if ($errNo == SOCKET_ETIMEDOUT) {
+				throw new ConnectionTimedOut;
+			}
+			throw new SocketException($errString . " code: {$errNo} " , $errNo);
 		}
 		return $this;
 	}
