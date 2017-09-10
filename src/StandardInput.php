@@ -1,6 +1,8 @@
 <?php
 namespace salodev;
 
+use Exception;
+
 class StandardInput extends ClientStream{
 	/**
 	 *
@@ -18,7 +20,7 @@ class StandardInput extends ClientStream{
 		$spec = 'php://stdin';
 		$mode = 'r';
 		if (self::$_stream instanceof StandardInput) {
-			throw new \Exception('singleton violation');
+			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;
 		parent::__construct($spec, $mode);

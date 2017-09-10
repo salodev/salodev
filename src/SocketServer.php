@@ -1,6 +1,8 @@
 <?php
 namespace salodev;
 
+use Exception;
+
 class SocketServer {
 	
 	static public function LogConsole($texto) {
@@ -18,13 +20,13 @@ class SocketServer {
 			$tries++;
 			if (!$socket->bind($address, $port)) {
 				if ($tries>10) {
-					throw new \Exception("Socket bind failed after {$tries} tries: " . $socket->getErrorText());
+					throw new Exception("Socket bind failed after {$tries} tries: " . $socket->getErrorText());
 				}
 				return;
 			}
 			Worker::RemoveTask($taskIndex); // To cancel interval.
 			if(($ret = $socket->listen(0)) < 0){
-				throw new \Exception("Socket Listen failed: " . $socket->getErrorText());
+				throw new Exception("Socket Listen failed: " . $socket->getErrorText());
 			}
 			$socket->setNonBlocking();
 			$fnOnReady($socket);

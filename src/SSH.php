@@ -1,27 +1,36 @@
 <?php
 namespace salodev;
+
 use SSH\ShellStream;
 use SSH\CommandStream;
+use Exception;
+
 class SSH {
+	
 	private $_resource;
-	public function __construct($host, $port, array $methods = array(), array $callbacks = array()) {
+	
+	public function __construct(string $host, int $port, array $methods = [], array $callbacks = []) {
 		if (!$this->_resource = ssh2_connect($host, $port, $methods, $callbacks)) {
-			throw new \Exception('Error trying connect to ssh host');
-		};
-		return $this;
-	}
-	public function getFingerPring($flags = SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX) {
-		return ssh2_fingerprint($this->_resource, $flags);
-	}
-	public function checkFingerPrint($knownHostString, $flags = SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX) {
-		return $knownHostString === $this->getFingerPring($flags);
-	}
-	public function authUserPassword($user, $password) {
-		if (!ssh2_auth_password($this->_resource, $user, $password)) {
-			throw new \Exception('Authentication by userpass failed');
+			throw new Exception('Error trying connect to ssh host');
 		}
 		return $this;
 	}
+	
+	public function getFingerPring($flags = SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX): string {
+		return ssh2_fingerprint($this->_resource, $flags);
+	}
+	
+	public function checkFingerPrint(string $knownHostString, $flags = SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX): bool {
+		return $knownHostString === $this->getFingerPring($flags);
+	}
+	
+	public function authUserPassword(string $user, string $password): self {
+		if (!ssh2_auth_password($this->_resource, $user, $password)) {
+			throw new Exception('Authentication by userpass failed');
+		}
+		return $this;
+	}
+	
 	/**
 	 * @return SSH\ShellStream Interactive shell stream
 	 */

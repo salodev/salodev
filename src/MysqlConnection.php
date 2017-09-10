@@ -1,5 +1,8 @@
 <?php
 namespace salodev;
+
+use Exception;
+
 class MysqlConnection {
 	private $_link     = null;
 	private $_host     = null;
@@ -20,7 +23,7 @@ class MysqlConnection {
 		$this->_link = mysqli_connect($this->_host, $this->_user, $this->_password, $this->_dbname);
 		if (!$this->_link) {
 			mysqli_close($this->_link);
-			throw new \Exception(mysqli_connect_error(), mysqli_connect_errno());
+			throw new Exception(mysqli_connect_error(), mysqli_connect_errno());
 		}
 		$this->selectDB($this->_dbname);
 		return $this->query("SELECT CONNECTION_ID() AS CID", function($rs) {
@@ -46,7 +49,7 @@ class MysqlConnection {
 		$this->_dbname = $dbName;
 		$ret = mysqli_select_db($this->_link, $dbName);
 		if (!$ret) {
-			throw new \Exception(mysqli_error(), mysqli_errno());
+			throw new Exception(mysqli_error(), mysqli_errno());
 		}
 		return true;
 	}
@@ -59,7 +62,6 @@ class MysqlConnection {
 	 * @throws \Exception
 	 */
 	public function query ($query, callable $callback = null) {
-		\cuif\CUIF::Log("QUERY: {$query}");
 		$deferred = new Deferred();
 		if (is_callable($callback)) {
 			$deferred->done($callback);
@@ -73,22 +75,17 @@ class MysqlConnection {
 				$this->connect();
 			}
 			$deferred->reject($error);
-			throw new \Exception($error, $errno);
+			throw new Exception($error, $errno);
 		}
 		Worker::AddTask(function($taskIndex) use($deferred) {
-			\cuif\CUIF::Log("TASKING {$taskIndex}");
 			if ($this->poll()) {
 				Worker::RemoveTask($taskIndex);
 				$result = $this->reapAsyncQuery();
-				\cuif\CUIF::Log(print_r($result, true));
 				$class = get_class($result);
 				if ($class != 'mysqli_result') {
-					\cuif\CUIF::Log(print_r($result));
-					\cuif\CUIF::Log(get_class($result));
 					$deferred->reject();
-					throw new \Exception(mysqli_error($this->_link), mysqli_errno($this->_link));
+					throw new Exception(mysqli_error($this->_link), mysqli_errno($this->_link));
 				}
-				\cuif\CUIF::Log('PROCESANDO RESPUESTA...');
 				$rs = array();
 				while($row = $result->fetch_assoc()) {
 					$rs[] = $row;
@@ -99,16 +96,19 @@ class MysqlConnection {
 		}, true , 'MYSQL QUERY RESULT LISTENER');
 		return $deferred;
 	}
+	
 	public function killQuery() {
 		$ret = mysqli_kill($this->_link, $this->_connectionId);
 		if (!$ret) {
-			throw new \Exception(mysqli_error($this->_link), mysqli_errno($this->_link));
+			throw new Exception(mysqli_error($this->_link), mysqli_errno($this->_link));
 		}
 	}
+	
 	public function poll() {
 		$links = array($this->_link);
 		return mysqli_poll($links , $links , $links , 0, 1);
 	}
+	
 	public function reapAsyncQuery() {
 		return mysqli_reap_async_query($this->_link);
 	}

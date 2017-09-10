@@ -1,6 +1,8 @@
 <?php
 namespace salodev;
 
+use Exception;
+
 class StandardError extends ClientStream {
 	/**
 	 *
@@ -12,7 +14,7 @@ class StandardError extends ClientStream {
 		$spec = 'php://stderr';
 		$mode = 'w';
 		if (self::$_stream instanceof StandardError) {
-			throw new \Exception('singleton violation');
+			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;
 		parent::__construct($spec, $mode);

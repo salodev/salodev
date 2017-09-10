@@ -1,17 +1,20 @@
 <?php
 namespace salodev;
 
+use Exception;
+use stdClass;
+
 class EventsHandler {
 
 	private $_events = array();
 
-	public function addListener($eventName, callable $eventListener, $persistent = true){
+	public function addListener(string $eventName, callable $eventListener, bool $persistent = true): self{
 
 		if (!is_callable($eventListener)) {
-			throw new \Exception('eventListener must be a function');
+			throw new Exception('eventListener must be a function');
 		}
 
-		$evData = new \stdClass();
+		$evData = new stdClass();
 		$evData->eventListener = $eventListener;
 		$evData->persistent    = (bool) $persistent;
 
@@ -20,12 +23,12 @@ class EventsHandler {
 		return $this;
 	}
 
-	public function removeListeners($eventName){
+	public function removeListeners(string $eventName){
 		//@todo: completar esto..
-		throw new \Exception('TODO: complete it.');
+		throw new Exception('TODO: complete it.');
 	}
 
-	public function trigger($eventName, $source, $params = null) {
+	public function trigger(string $eventName, $source, array $params = []) {
 		if(isset($this->_events[$eventName])) {			
 			foreach ($this->_events[$eventName] as $k => $evData) {
 				$eventListener = $evData->eventListener;

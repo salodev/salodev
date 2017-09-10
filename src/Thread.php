@@ -1,5 +1,8 @@
 <?php
 namespace salodev;
+
+use Exception;
+
 /**
  * El proposito general de esta clase es encapsular ciertos metodos de un thread
  * a fin de facilitar algunas tareas y escribir un código más semántico y elegante.
@@ -46,10 +49,10 @@ class Thread {
     
     static public function ChangeIidentity($uid, $gid){
         if(!posix_setgid($gid)){
-            throw new \Exception('Unable to change GID');
+            throw new Exception('Unable to change GID');
         }
         if(!posix_setuid($uid)){
-            throw new \Exception('Unable to change UID');
+            throw new Exception('Unable to change UID');
         }
     }
 }

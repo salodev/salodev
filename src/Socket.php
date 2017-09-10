@@ -1,13 +1,15 @@
 <?php
 namespace salodev;
 
+use Exception;
+
 class Socket extends Stream {
     private $resource = null;
 	private $readBuffer = null;
     
     public function __construct($resource = null) {
         if ($resource !== null && !is_resource($resource)) {
-            throw new \Exception('Parameter given must be null or valid resource');
+            throw new Exception('Parameter given must be null or valid resource');
         }
         $this->resource = $resource;
     }
@@ -21,7 +23,7 @@ class Socket extends Stream {
     public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
         $resource = socket_create($domain, $type , $protocol);
         if (!is_resource($resource)) {
-            throw new \Exception($this->getErrorText(), $this->getLastError());
+            throw new Exception($this->getErrorText(), $this->getLastError());
         }
         $this->resource = $resource;
 		$this->setNonBlocking();
@@ -75,7 +77,7 @@ class Socket extends Stream {
     
     public function read($length, $type = PHP_BINARY_READ) {
 		if (!$this->isValidResource()) {
-			throw new \Exception('Invalid socket resource. Connection may be expired.');
+			throw new Exception('Invalid socket resource. Connection may be expired.');
 		}
         return @socket_read($this->resource, $length, $type);
     }
@@ -114,7 +116,7 @@ class Socket extends Stream {
     
     public function write($buffer, $length = null) {
 		if (!$this->isValidResource()) {
-			throw new \Exception('Invalid socket resource. Connection may be expired.');
+			throw new Exception('Invalid socket resource. Connection may be expired.');
 		}
         if ($length===null) {
             $length = strlen($buffer);

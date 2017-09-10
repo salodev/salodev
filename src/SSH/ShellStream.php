@@ -1,6 +1,10 @@
 <?php
 namespace salodev\SSH;
-class ShellStream extends \salodev\ClientStream {
+
+use salodev\ClientStream;
+use Exception;
+
+class ShellStream extends ClientStream {
 	
 	static public function Create($resource, array $options = []): self {
 		$options['connection'] = $resource;
@@ -23,7 +27,7 @@ class ShellStream extends \salodev\ClientStream {
 			$options['height'],
 			$options['mesaureType']
 		)) {
-			throw new \Exception('Interactive shell failed');
+			throw new Exception('Interactive shell failed');
 		}
 		$this->setNonBlocking();
 	}

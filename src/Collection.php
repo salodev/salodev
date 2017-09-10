@@ -1,10 +1,14 @@
 <?php
 
 namespace salodev;
+
+use Iterator;
+
 /**
  * Cada elemento de esta colección puede ser de cualquier tipo.
  */
-class Collection implements \Iterator{
+class Collection implements Iterator {
+	
     protected $_position = 0;
 
     protected $_data = array();

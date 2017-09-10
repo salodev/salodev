@@ -16,7 +16,7 @@ class ClientSocket extends ClientStream {
 		]);
 	}
 	
-	public function open(array $options = []) {
+	public function open(array $options = []): self {
 		$host = $options['host'] ?? null;
 		$port = $options['port'] ?? null;
 		$timeout = $options['timeout'] ?? 5;
@@ -32,12 +32,13 @@ class ClientSocket extends ClientStream {
 		}
 		return $this;
 	}
-	public function read($bytes = 256, $type = null) {
+	
+	public function read($bytes = 256, $type = null): string {
 		return fread($this->_resource, $bytes);
 	}
 	
-	public function readAll($length, $type = PHP_BINARY_READ) {
-		$read = null;
+	public function readAll($length, $type = PHP_BINARY_READ): string {
+		$read = '';
 		while($buffer = $this->read($length, $type)) {
 			$read .= $buffer;
 			if (strpos($buffer, "\n")!==false) {
@@ -47,16 +48,18 @@ class ClientSocket extends ClientStream {
 		return $read;
 	}
 	
-	public function readLine($length = 255) {
+	public function readLine(int $length = 255): string {
 		return fgets($this->_resource, $length);
 	}
-	public function write($content, $length = null) {
+	
+	public function write($content, int $length = null): self {
 		$length = $length===null ? strlen($content) : $length;
 		// echo "escribiendo '$content' ({$length})\n";
 		fwrite($this->_resource, $content, $length);
 		return $this;
 	}
-	public function writeAndRead($content) {
+	
+	public function writeAndRead($content): string {
 		$this->setBlocking();
 		$this->write($content . "\n");
 		$buffer = '';
@@ -65,15 +68,18 @@ class ClientSocket extends ClientStream {
 		}
 		return $buffer;
 	}
-	public function close() {
+	
+	public function close(): self {
 		fclose($this->_resource);
 		return $this;
 	}
-	public function setBlocking() {
+	
+	public function setBlocking(): self {
 		stream_set_blocking($this->_resource, true);
 		return $this;
 	}
-	public function setNonBlocking() {
+	
+	public function setNonBlocking(): self {
 		stream_set_blocking($this->_resource, false);
 		return $this;
 	}

@@ -1,6 +1,8 @@
 <?php
 namespace salodev;
 
+use Exception;
+
 class StandardOutput extends ClientStream {
 	/**
 	 *
@@ -12,7 +14,7 @@ class StandardOutput extends ClientStream {
 		$spec = 'php://stdout';
 		$mode = 'w';
 		if (self::$_stream instanceof StandardOutput) {
-			throw new \Exception('singleton violation');
+			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;
 		parent::__construct($spec, $mode);
