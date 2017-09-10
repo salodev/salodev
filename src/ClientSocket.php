@@ -33,7 +33,7 @@ class ClientSocket extends ClientStream {
 		return $this;
 	}
 	
-	public function read($bytes = 256, $type = null): string {
+	public function read(int $bytes = 256, int $type = 0): string {
 		return fread($this->_resource, $bytes);
 	}
 	
@@ -52,14 +52,12 @@ class ClientSocket extends ClientStream {
 		return fgets($this->_resource, $length);
 	}
 	
-	public function write($content, int $length = null): self {
-		$length = $length===null ? strlen($content) : $length;
-		// echo "escribiendo '$content' ({$length})\n";
-		fwrite($this->_resource, $content, $length);
+	public function write(string $content, int $length = 0): self {
+		fwrite($this->_resource, $content, $length == 0 ? strlen($content) : $length);
 		return $this;
 	}
 	
-	public function writeAndRead($content): string {
+	public function writeAndRead(string $content): string {
 		$this->setBlocking();
 		$this->write($content . "\n");
 		$buffer = '';

@@ -13,7 +13,7 @@ abstract class ClientStream extends Stream {
 		return $this;
 	}
 	
-	public function read(int $bytes = 256, $type = null): string {
+	public function read(int $bytes = 256, int $type = 0): string {
 		return fread($this->_resource, $bytes);
 	}
 	
@@ -21,8 +21,8 @@ abstract class ClientStream extends Stream {
 		return fgets($this->_resource, $length);
 	}
 	
-	public function write(string $content, int $length = null): self {
-		$length = $length===null ? strlen($content) : $length;
+	public function write(string $content, int $length = 0): self {
+		$length = $length == 0 ? strlen($content) : $length;
 		fwrite($this->_resource, $content, $length);
 		return $this;
 	}

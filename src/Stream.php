@@ -20,8 +20,8 @@ abstract class Stream {
 		// }
 	}
 	abstract public function open(array $options = []);
-	abstract public function read($bytes = 256, $type);
-	abstract public function write($content, $length = null);
+	abstract public function read(int $bytes = 256, int $type = 0);
+	abstract public function write(string $content, int $length = 0);
 	abstract public function close();
 	abstract public function setBlocking();
 	abstract public function setNonBlocking();

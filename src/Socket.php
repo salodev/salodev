@@ -75,7 +75,7 @@ class Socket extends Stream {
         socket_close($this->resource);
     }
     
-    public function read($length, $type = PHP_BINARY_READ) {
+    public function read(int $length = 256, int $type = PHP_BINARY_READ) {
 		if (!$this->isValidResource()) {
 			throw new Exception('Invalid socket resource. Connection may be expired.');
 		}
@@ -114,11 +114,11 @@ class Socket extends Stream {
 		}, true, 'SOCKET - READ LINE TASK');
     }
     
-    public function write($buffer, $length = null) {
+    public function write(string $buffer, int $length = 0) {
 		if (!$this->isValidResource()) {
 			throw new Exception('Invalid socket resource. Connection may be expired.');
 		}
-        if ($length===null) {
+        if ($length== 0) {
             $length = strlen($buffer);
         }
         return socket_write($this->resource, $buffer, $length);
