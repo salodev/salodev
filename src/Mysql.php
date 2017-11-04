@@ -1,7 +1,6 @@
 <?php
 namespace salodev;
 
-use mysqli_result;
 use salodev\Mysql\QueryTable;
 use salodev\Mysql\Connection;
 use Exception;
@@ -28,7 +27,7 @@ class Mysql {
 		return self::$_connections[$name];
 	}
 	
-	static public function Query($sql): mysqli_result {
+	static public function Query($sql) {
 		return self::GetConnection()->query($sql);
 	}
 	

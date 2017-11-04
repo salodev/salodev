@@ -3,6 +3,7 @@
 namespace salodev\Mysql;
 use mysqli;
 use mysqli_result;
+use Exception;
 
 class Connection {
 	
@@ -95,9 +96,8 @@ class Connection {
 	/**
 	 * 
 	 * @param string $sql
-	 * @return \mysqli_result;
 	 */
-	public function query(string $sql): mysqli_result {
+	public function query(string $sql) {
 		$resource = $this->connect();
 		if ($this->logFile) {
 			$sql = trim($sql);
@@ -105,6 +105,7 @@ class Connection {
 		}
 		$this->_autoAddLock($sql);
 		$result = $resource->query($sql);
+		
 		if ($insertID = $this->getInsertID()) {
 			@file_put_contents($this->logFile, "INSERT_ID={$insertID};\n", FILE_APPEND);
 		}
