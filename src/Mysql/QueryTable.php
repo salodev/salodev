@@ -2,10 +2,10 @@
 
 namespace salodev\Mysql;
 
-use salodev\Mysql;
 use salodev\Mysql\QueryException;
 
 class QueryTable {
+	private $_connection;
 	private $_name;
 	private $_eqFilters     = [];
 	private $_customFilters = [];
@@ -17,7 +17,8 @@ class QueryTable {
 	private $_offset        = 0;
 	private $_limit         = 100;
 	
-	public function __construct($name) {
+	public function __construct(Connection $connection, string $name) {
+		$this->_connection = $connection;
 		$this->_name = $name;
 	}
 	
@@ -113,7 +114,13 @@ class QueryTable {
 		$wheres = [];
 		if (count($this->_eqFilters)) {
 			foreach($this->_eqFilters as $column => $value) {
-				$wheres[] = $value===null?"{$column} IS NULL":"{$column} = '{$value}'";
+				if ($value===NULL) {
+					$wheres[] = "{$column} IS NULL";
+				} elseif (is_array($value)) {
+					$wheres[] = "{$column} IN('" . implode("', '", $value) . "')";
+				} else {
+					$wheres[] = "{$column} = '{$value}'";
+				}
 			}
 		}
 		if (count($this->_customFilters)) {
@@ -220,29 +227,29 @@ class QueryTable {
 	public function select(array $params = []) {
 		$this->_parseSelectParameters($params);
 		$sql = $this->getSelectSQL();
-		return Mysql::GetData($sql);
+		return $this->_connection->getData($sql);
 	}
 	
 	public function delete() {
 		$sql = $this->getDeleteSQL();
-		return Mysql::Query($sql);
+		return $this->_connection->query($sql);
 	}
 	
 	public function insert() {
 		$sql = $this->getInsertSQL();
-		Mysql::Query($sql);
-		return Mysql::GetInsertID();
+		$this->_connection->query($sql);
+		return $this->_connection->getInsertID();
 	}
 	
 	public function update(array $fields) {
 		$sql = $this->getUpdateSQL($fields);
-		return Mysql::Query($sql);
+		return $this->_connection->query($sql);
 	}
 	
 	public function fetchRow($column = null) {
 		$sql = $this->getSelectSQL();
-		Mysql::Query($sql);
-		$row = Mysql::FetchRow();
+		$this->_connection->query($sql);
+		$row = $this->_connection->fetchRow();
 		if ($column) {
 			if (!array_key_exists($column, $row)) {
 				throw new QueryException("Column '{$column}' does not exist.");
@@ -258,7 +265,7 @@ class QueryTable {
 	}
 	
 	public function atLeastOne(string $errorMessage): self {
-		Mysql::AtLeastOne($errorMessage);
+		$this->_connection->atLeastOne($errorMessage);
 		return $this;
 	}
 	
