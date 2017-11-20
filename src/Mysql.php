@@ -10,6 +10,11 @@ class Mysql {
 	static private $_connections = array();
 	static private $_defaultConnection = null;
 	
+	static public function Instance(string $name): Connection {
+		self::SetDefaultConnection($name);
+		return self::GetConnection();
+	}
+	
 	static public function AddConnection($name, Connection $connection) {
 		self::$_connections[$name] = $connection;
 		self::SetDefaultConnection($name);
