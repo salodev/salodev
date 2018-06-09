@@ -36,13 +36,13 @@ class IO {
 	}
 	static public function ReadLine(callable $onRead, $readOneTime = true) {
 		self::_GetCreateStreams();
-		self::$_stdin->readLine($onRead, $readOneTime);
+		self::$_stdin->readLineAsync($onRead, $readOneTime);
 	}
 	static public function Write($content) {
 		self::_GetCreateStreams();
 		self::$_stdout->write($content);
 	}
-	static public function WriteLine($content) {
+	static public function WriteLine($content = '') {
 		self::_GetCreateStreams();
 		self::$_stdout->writeLine($content);
 	}
@@ -50,7 +50,7 @@ class IO {
 		self::_GetCreateStreams();
 		self::$_stderr->write($content);
 	}
-	static public function WriteLineError($content) {
+	static public function WriteLineError($content = '') {
 		self::_GetCreateStreams();
 		self::$_stderr->writeLine($content);
 	}

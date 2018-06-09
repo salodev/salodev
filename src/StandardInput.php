@@ -3,7 +3,7 @@ namespace salodev;
 
 use Exception;
 
-class StandardInput extends ClientStream{
+class StandardInput extends ClientStream {
 	/**
 	 *
 	 * @var Stream
@@ -23,9 +23,14 @@ class StandardInput extends ClientStream{
 			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;
-		parent::__construct($spec, $mode);
+		
+		parent::__construct(array_merge([
+			'spec' => $spec,
+			'mode' => $mode,
+		], $options));
 	}
-	public function readLine(callable $fn, $readOneTime = true) {
+	
+	public function readLineAsync(callable $fn, bool $readOneTime = true): void {
 		Worker::AddTask(function($taskIndex) use ($fn, $readOneTime){
 			$ret = $this->read();
 			if (strlen($ret)) {

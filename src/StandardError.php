@@ -17,7 +17,10 @@ class StandardError extends ClientStream {
 			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;
-		parent::__construct($spec, $mode);
+		parent::__construct(array_merge([
+			'spec' => $spec,
+			'mode' => $mode,
+		], $options));
 	}
 	
 	public function writeLine($content) {

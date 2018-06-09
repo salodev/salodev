@@ -15,6 +15,7 @@ class QueryTable {
 	private $_innerJoins    = [];
 	private $_leftJoins     = [];
 	private $_offset        = 0;
+	private $_groupBy       = [];
 	private $_limit         = 100;
 	
 	public function __construct(Connection $connection, string $name) {
@@ -38,6 +39,11 @@ class QueryTable {
 	
 	public function leftJoin($portion): self {
 		$this->_leftJoins[] = "LEFT JOIN {$portion}";
+		return $this;
+	}
+	
+	public function groupBy($field): self {
+		$this->_groupBy[] = $field;
 		return $this;
 	}
 	
@@ -144,6 +150,13 @@ class QueryTable {
 		return $sqlOrder;
 	}
 	
+	private function _getSQLGroup() {
+		if (!count($this->_groupBy)) {
+			return '';
+		}
+		return "GROUP BY " . implode(', ', $this->_groupBy);
+	}
+	
 	public function getSelectSQL() {
 		$sqlColumnList = '*';
 		if (count($this->_columnList)) {
@@ -154,6 +167,7 @@ class QueryTable {
 		$sqlLeftJoin = implode("\n", $this->_leftJoins);
 		$sqlWhere = $this->_getSQLWhere();
 		$sqlOrder = $this->_getSQLOrder();
+		$sqlGroup = $this->_getSQLGroup();
 		
 		$sqlLimit = '';
 		if ($this->_useLimits) {
@@ -165,6 +179,7 @@ class QueryTable {
 			{$sqlInnerJoin}
 			{$sqlLeftJoin}
 			{$sqlWhere}
+			{$sqlGroup}
 			{$sqlOrder}
 			{$sqlLimit}
 		";

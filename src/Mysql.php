@@ -7,104 +7,104 @@ use Exception;
 
 class Mysql {
 	
-	static private $_connections = array();
-	static private $_defaultConnection = null;
+	static protected $_connections = array();
+	static protected $_defaultConnection = null;
 	
 	static public function Instance(string $name): Connection {
-		self::SetDefaultConnection($name);
+		static::SetDefaultConnection($name);
 		return self::GetConnection();
 	}
 	
 	static public function AddConnection($name, Connection $connection) {
-		self::$_connections[$name] = $connection;
-		self::SetDefaultConnection($name);
+		static::$_connections[$name] = $connection;
+		static::SetDefaultConnection($name);
 	}
 	
 	static public function SetDefaultConnection(string $name) {
-		self::$_defaultConnection = $name;
+		static::$_defaultConnection = $name;
 	}
 	
 	static public function GetConnection(): Connection {
-		$name = self::$_defaultConnection;
-		if (!isset(self::$_connections[$name])) {
+		$name = static::$_defaultConnection;
+		if (!isset(static::$_connections[$name])) {
 			throw new Exception("Connection not found: '{$name}'");
 		}
-		return self::$_connections[$name];
+		return static::$_connections[$name];
 	}
 	
 	static public function Query($sql) {
-		return self::GetConnection()->query($sql);
+		return static::GetConnection()->query($sql);
 	}
 	
 	static public function MultiQuery($sql): bool {
-		return self::GetConnection()->multiQuery($sql);
+		return static::GetConnection()->multiQuery($sql);
 	}
 	
 	static public function FetchRow($sql = null): array {
-		return self::GetConnection()->fetchRow($sql);
+		return static::GetConnection()->fetchRow($sql);
 	}
 	
 	static public function GetResultSet(): array {
-		return self::GetConnection()->getResultSet();
+		return static::GetConnection()->getResultSet();
 	}
 	
 	static public function GetData($sql): array {
-		return self::GetConnection()->getData($sql);
+		return static::GetConnection()->getData($sql);
 	}
 	
 	static public function GetInsertID(): int {
-		return self::GetConnection()->getInsertID();
+		return static::GetConnection()->getInsertID();
 	}
 	
 	static public function GetAffectedRows(): int {
-		return self::GetConnection()->getAffectedRows();
+		return static::GetConnection()->getAffectedRows();
 	}
 	
 	static public function Insert($tableName, array $fields, array $fieldsUpdate = []): int {
-		return self::GetConnection()->insert($tableName, $fields, $fieldsUpdate);
+		return static::GetConnection()->insert($tableName, $fields, $fieldsUpdate);
 	}
 	
 	static public function Update($tableName, array $fields, $fieldsFilter): bool {
-		return self::GetConnection()->update($tableName, $fields, $fieldsFilter);
+		return static::GetConnection()->update($tableName, $fields, $fieldsFilter);
 	}
 	
 	static public function Delete($tableName, array $fieldsFilter): bool {
-		return self::GetConnection()->delete($tableName, $fieldsFilter);
+		return static::GetConnection()->delete($tableName, $fieldsFilter);
 	}
 	
 	static public function GetLastQuery(): string {
-		return self::GetConnection()->getLastQuery();
+		return static::GetConnection()->getLastQuery();
 	}
 	
 	static public function Select($tableName, array $wheres = array(), array $fieldList = array()): array {
-		return self::GetConnection()->select($tableName, $wheres, $fieldList);
+		return static::GetConnection()->select($tableName, $wheres, $fieldList);
 	}
 
 	static public function Table($name): QueryTable {
-		return self::GetConnection()->table($name);
+		return static::GetConnection()->table($name);
 	}
 	
 	static public function Transaction(): bool {
-		return self::GetConnection()->transaction();
+		return static::GetConnection()->transaction();
 	}
 	
 	static public function Commit(): bool {
-		return self::GetConnection()->commit();
+		return static::GetConnection()->commit();
 	}
 	
 	static public function Rollback() {
-		return self::GetConnection()->rollback();
+		return static::GetConnection()->rollback();
 	}
 	
 	static public function FixDate($date): string {
-		return self::GetConnection()->fixDate($date);
+		return static::GetConnection()->fixDate($date);
 	}
 	
 	static public function AddDate($date, $count, $period): string {
-		return self::GetConnection()->addDate($date, $count, $period);
+		return static::GetConnection()->addDate($date, $count, $period);
 	}
 	
 	static public function AtLeastOne(string $errorMessage) {
-		return self::GetConnection()->atLeastOne($errorMessage);
+		return static::GetConnection()->atLeastOne($errorMessage);
 	}
 }
