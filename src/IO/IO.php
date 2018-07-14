@@ -1,5 +1,5 @@
 <?php
-namespace salodev;
+namespace salodev\IO;
 
 class IO {
 	/**

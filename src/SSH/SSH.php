@@ -1,8 +1,6 @@
 <?php
-namespace salodev;
+namespace salodev\SSH;
 
-use SSH\ShellStream;
-use SSH\CommandStream;
 use Exception;
 
 class SSH {

@@ -1,5 +1,5 @@
 <?php
-namespace salodev;
+namespace salodev\IO;
 
 /**
  * Una abstracción para los consumidores de flujo.

@@ -1,5 +1,5 @@
 <?php
-namespace salodev;
+namespace salodev\IO;
 /**
  * Para darle una interfaz a los flujos de datos.
  * @todo No estoy seguro si dividirlo en una abstracción para el servidor del flujo

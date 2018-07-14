@@ -1,5 +1,5 @@
 <?php
-namespace salodev;
+namespace salodev\Pcntl;
 
 use Exception;
 
@@ -7,7 +7,7 @@ class Process {
     private $_stream;
     private $_command;
     private $_pipes;
-    public function __construct($command, $wd, $env = array()) {
+    public function __construct(string $command, string $wd, array $env = []) {
         $this->_command = $command;
         $this->_stream = proc_open($this->_command, array(
            0 => array('pipe', 'r'),
@@ -22,11 +22,16 @@ class Process {
         stream_set_blocking($this->_pipes[2], 0);
     }
 	
-    public function write($string) {
+	static public function Spawn(string $command, string $wd, array $env = []): self {
+		return new self($command, $wd, $env);
+	}
+	
+    public function write(int $string): self {
         fwrite($this->_pipes[0], $string);
+		return $this;
     }
 	
-    public function read($length = 256) {
+    public function read(int $length = 256): string {
         $buffer = '';
         while($read = fread($this->_pipes[1], $length)) {
             $buffer .= $read;
@@ -34,7 +39,7 @@ class Process {
         return $buffer;
     }
 	
-    public function readError($length = 256) {
+    public function readError(int $length = 256): string {
         $buffer = '';
         while($read = fread($this->_pipes[2], $length)) {
             $buffer .= $read;
@@ -42,21 +47,26 @@ class Process {
         return $buffer;
     }
 	
-    public function terminate($signal = 15) {
+    public function terminate(int $signal = 15): void {
         proc_terminate($this->_stream, $signal);
     }
 	
-    public function getStatus() {
+    public function getStatus(): array {
         return proc_get_status($this->_stream);
     }
 	
-    public function close(){
+    public function close(): void {
         proc_close($this->_stream);
     }
 	
-    public function isRunning() {
+    public function isRunning(): bool {
         $status = $this->getStatus();
         return $status['running'];
     }
+	
+	public function getPID(): int {
+		$info = $this->getStatus();
+		return $info['pid'];
+	}
     
 }

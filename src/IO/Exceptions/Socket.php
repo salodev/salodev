@@ -1,6 +1,6 @@
 <?php
 
-namespace salodev\Exceptions;
+namespace salodev\IO\Exceptions;
 use Exception;
 
 class Socket extends Exception {}

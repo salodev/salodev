@@ -68,4 +68,8 @@ class Deferred {
 		}
 		return $this;
 	}
+	
+	public function getPromise(): Promise {
+		return new Promise($this);
+	}
 }

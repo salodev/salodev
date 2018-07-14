@@ -61,7 +61,7 @@ class MysqlConnection {
 	 * @return \salodev\Deferred
 	 * @throws \Exception
 	 */
-	public function query ($query, callable $callback = null) {
+	public function query (string $query, callable $callback = null): Promise {
 		$deferred = new Deferred();
 		if (is_callable($callback)) {
 			$deferred->done($callback);
@@ -94,7 +94,7 @@ class MysqlConnection {
 				$deferred->resolve($rs, $this);
 			};
 		}, true , 'MYSQL QUERY RESULT LISTENER');
-		return $deferred;
+		return $deferred->getPromise();
 	}
 	
 	public function killQuery() {

@@ -2,8 +2,8 @@
 
 namespace salodev\Implementations;
 
-use salodev\Socket;
-use salodev\Thread;
+use salodev\IO\Socket;
+use salodev\Pcntl\Thread;
 use Exception;
 
 declare(ticks = 1); // It allows signal handlers run!

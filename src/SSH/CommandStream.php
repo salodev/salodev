@@ -19,14 +19,14 @@ class CommandStream extends ClientStream {
 			'env' => array(),
 			'width' => 80,
 			'height' => 25,
-			'mesaureType' => SSH2_TERM_UNIT_CHARS,
+			'measureType' => SSH2_TERM_UNIT_CHARS,
 		), $options);
 		if (!$this->_resource = ssh2_exec($connection, $command,
 			$options['pty'],
 			$options['env'],
 			$options['width'],
 			$options['height'],
-			$options['mesaureType']
+			$options['measureType']
 		)) {
 			throw new Exception('Interactive shell failed');
 		}

@@ -1,6 +1,6 @@
 <?php
 
-namespace salodev;
+namespace salodev\Pcntl;
 
 class Child {
 	

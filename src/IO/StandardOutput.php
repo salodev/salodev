@@ -1,9 +1,9 @@
 <?php
-namespace salodev;
+namespace salodev\IO;
 
 use Exception;
 
-class StandardError extends ClientStream {
+class StandardOutput extends ClientStream {
 	/**
 	 *
 	 * @var Stream
@@ -11,9 +11,9 @@ class StandardError extends ClientStream {
 	protected static $_stream = null;
 	
 	public function __construct(array $options = []) {
-		$spec = 'php://stderr';
+		$spec = 'php://stdout';
 		$mode = 'w';
-		if (self::$_stream instanceof StandardError) {
+		if (self::$_stream instanceof StandardOutput) {
 			throw new Exception('singleton violation');
 		}
 		self::$_stream = $this;

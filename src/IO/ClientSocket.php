@@ -1,8 +1,8 @@
 <?php
-namespace salodev;
-use salodev\Exceptions\Socket\ConnectionRefused;
-use salodev\Exceptions\Socket\ConnectionTimedOut;
-use salodev\Exceptions\Socket as SocketException;
+namespace salodev\IO;
+use salodev\IO\Exceptions\Socket\ConnectionRefused;
+use salodev\IO\Exceptions\Socket\ConnectionTimedOut;
+use salodev\IO\Exceptions\Socket as SocketException;
 /**
  * Una abstracción para los consumidores de flujo.
  */

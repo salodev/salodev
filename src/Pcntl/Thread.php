@@ -1,5 +1,5 @@
 <?php
-namespace salodev;
+namespace salodev\Pcntl;
 
 use Exception;
 
@@ -55,4 +55,8 @@ class Thread {
             throw new Exception('Unable to change UID');
         }
     }
+	
+	static public function SpawnChildProcess(string $command, string $wd, array $env = []): Process {
+		return Process::Spawn($command, $wd, $env);
+	}
 }
