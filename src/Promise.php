@@ -12,16 +12,16 @@ class Promise {
 	
 	public function done(callable $callback): self {
 		$this->_deferred->done($callback);
-		return self;
+		return $this;
 	}
 	
 	public function fail(callable $callback): self {
 		$this->_deferred->fail($callback);
-		return self;
+		return $this;
 	}
 	
 	public function always(callable $callback): self {
 		$this->_deferred->always($callback);
-		return self;
+		return $this;
 	}
 }

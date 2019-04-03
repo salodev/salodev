@@ -1,8 +1,6 @@
 <?php
 namespace salodev\IO;
 
-use Exception;
-
 class StandardInput extends ClientStream {
 	/**
 	 *
@@ -16,18 +14,22 @@ class StandardInput extends ClientStream {
 	 */
 	protected $_readBuffer = null;
 	
-	public function __construct(array $options = []) {
+	static public function Create(array $options = []): self {
 		$spec = 'php://stdin';
 		$mode = 'r';
-		if (self::$_stream instanceof StandardInput) {
-			throw new Exception('singleton violation');
-		}
-		self::$_stream = $this;
 		
-		parent::__construct(array_merge([
+		$instance = new self(array_merge([
 			'spec' => $spec,
 			'mode' => $mode,
 		], $options));
+		
+		return $instance;
+	}
+	
+	static public function CreateFromResource($resource): self {
+		return new self([
+			'resource' => $resource,
+		]);
 	}
 	
 	public function readLineAsync(callable $fn, bool $readOneTime = true): void {

@@ -5,8 +5,8 @@ use Exception;
 
 class Worker {
 	static private $_stopped = true;
-	static private $_tasks = array();
-	static public function Start($usleep = 1000, $exceptionCatcherCallback = null) {
+	static private $_tasks   = [];
+	static public function Start(int $usleep = 1000, callable $exceptionCatcherCallback = null): void {
 		self::$_stopped = false;
 		while (count(self::$_tasks)) {
 			usleep($usleep);
@@ -31,31 +31,41 @@ class Worker {
 			}
 		};
 	}
-	static public function Stop() {
+	static public function Stop(): void {
 		self::$_stopped = true;
 	}
-	static public function AddTask($callback, $persistent = true, $taskName = 'no name') {
-		self::$_tasks[] = array('callback' =>$callback, 'persistent' => $persistent, 'taskName' =>$taskName);
+	
+	static public function AddTask(callable $callback, bool $persistent = true, string $taskName = 'no name'): int {
+		self::$_tasks[] = [
+			'callback'   => $callback, 
+			'persistent' => $persistent, 
+			'taskName'   => $taskName,
+		];
 		end(self::$_tasks);
 		return key(self::$_tasks); // returns index id.
 	}
-	static public function RemoveTask($taskIndex) {
+	
+	static public function RemoveTask(int $taskIndex): void {
 		if (!isset(self::$_tasks[$taskIndex])) {
 			return;
 		}
 		$task = self::$_tasks[$taskIndex];
 		unset(self::$_tasks[$taskIndex]);
 	}
-	static public function Clear() {
-		self::$_tasks = array();
+	
+	static public function Clear(): void {
+		self::$_tasks = [];
 	}
-	static public function IsRunning() {
+	
+	static public function IsRunning(): bool {
 		return !self::$_stopped;
 	}
-	static public function GetCountTasks() {
+	
+	static public function GetCountTasks(): int {
 		return count(self::$_tasks);
 	}
-	static public function GetTasksList() {
+	
+	static public function GetTasksList(): array {
 		return self::$_tasks;
 	}
 }

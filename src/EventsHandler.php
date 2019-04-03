@@ -6,9 +6,9 @@ use stdClass;
 
 class EventsHandler {
 
-	private $_events = array();
+	private $_events = [];
 
-	public function addListener(string $eventName, callable $eventListener, bool $persistent = true): self{
+	public function addListener(string $eventName, callable $eventListener, bool $persistent = true): self {
 
 		if (!is_callable($eventListener)) {
 			throw new Exception('eventListener must be a function');
@@ -23,12 +23,14 @@ class EventsHandler {
 		return $this;
 	}
 
-	public function removeListeners(string $eventName){
-		//@todo: completar esto..
-		throw new Exception('TODO: complete it.');
+	public function removeListeners(string $eventName): self {
+		if (isset($this->_events[$eventName])) {
+			unset($this->_events[$eventName]);
+		}
+		return $this;
 	}
 
-	public function trigger(string $eventName, $source, array $params = []) {
+	public function trigger(string $eventName, $source, array $params = []): bool {
 		if(isset($this->_events[$eventName])) {			
 			foreach ($this->_events[$eventName] as $k => $evData) {
 				$eventListener = $evData->eventListener;

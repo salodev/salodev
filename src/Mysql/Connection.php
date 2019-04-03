@@ -146,23 +146,28 @@ class Connection {
 		}
 		
 		$row = $this->_lastResult->fetch_assoc();
+		if (!is_array($row)) {
+			$row = [];
+		}
 		return $row;
 	}
 	
-	public function getResultSet(): array {
+	public function getResultSet(string $className = null, array $classParams = null): array {
 		if (!$this->_lastResult) {
 			throw new Exception('No result found');
 		}
 		$rs = array();
-		while ($row = $this->_lastResult->fetch_assoc()) {
-			$rs[] = $row;
-		}
+		while (
+			$row = $className !== null
+			? $this->_lastResult->fetch_object($className, $classParams)
+			: $this->_lastResult->fetch_assoc()
+		) { $rs[] = $row; }
 		return $rs;
 	}
 	
-	public function getData($sql): array {
+	public function getData(string $sql, string $className = null, $classParams = null): array {
 		$this->query($sql);
-		return $this->getResultSet();
+		return $this->getResultSet($className, $classParams);
 	}
 	
 	public function getInsertID(): int {

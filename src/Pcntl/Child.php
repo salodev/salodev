@@ -1,6 +1,8 @@
 <?php
 
 namespace salodev\Pcntl;
+use salodev\Deferred;
+use salodev\Promise;
 
 class Child {
 	
@@ -11,7 +13,7 @@ class Child {
 		$this->_pid = $pid;
 	}
 	
-	public function wait(int $options = 0) {
+	public function wait(int $options = 0): int {
 		return pcntl_waitpid($this->_pid, $this->_status, $options);
 	}
 	
@@ -31,7 +33,7 @@ class Child {
 		return pcntl_wifsignaled($this->_status);
 	}
 	
-	public function getExitStatus(): int {
+	public function getExitCode(): int {
 		return pcntl_wexitstatus($this->_status);
 	}
 	
@@ -49,5 +51,26 @@ class Child {
 	
 	public function kill(): bool {
 		return $this->sendSignal(SIGKILL);
+	}
+	
+	public function isRunning(): bool {
+		$pid = $this->wait(WNOHANG);
+		return !($pid>0 && $this->exited());
+	}
+	
+	public function waitForFinish(): Promise {
+		$deferred = new Deferred;
+		Worker::AddTask(function($taskIndex) use ($deferred) {
+			if (!$this->isRunning()) {
+				Worker::RemoveTask($taskIndex);
+				if ($this->getExitCode() === 0) {
+					$deferred->resolve($this);
+				} else {
+					$deferred->reject($this);
+				}
+			}
+		}, true, "Waiting for PID: {$this->getPid()}");
+		
+		return $deferred->getPromise();
 	}
 }

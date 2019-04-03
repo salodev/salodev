@@ -7,10 +7,18 @@ use Exception;
  * El proposito general de esta clase es encapsular ciertos metodos de un thread
  * a fin de facilitar algunas tareas y escribir un código más semántico y elegante.
  */
-class Thread {
+abstract class Thread {
 	
 	static protected $_childPIDs = [];
 	static protected $_childs    = [];
+	
+	public function start(array $params = []): Child {
+		return self::Fork(function() use ($params) {
+			$this->run($params);
+		});
+	}
+	
+	abstract public function run(array $params = []);
 	
 	/**
 	 * 
@@ -58,5 +66,9 @@ class Thread {
 	
 	static public function SpawnChildProcess(string $command, string $wd, array $env = []): Process {
 		return Process::Spawn($command, $wd, $env);
+	}
+	
+	static public function Nice(int $increment): void {
+		proc_nice($increment);
 	}
 }

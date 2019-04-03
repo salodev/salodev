@@ -13,47 +13,50 @@ class Collection implements Iterator {
 
     protected $_data = array();
 
-    public function __construct(array $data = array()) {
+    public function __construct(array $data = []) {
         $this->_position = 0;
 		$this->_data = $data;
     }
 
-    public function rewind() {
+    public function rewind(): self {
 		//reset($this->_data);
         $this->_position = 0;
+		return $this;
     }
 
-    public function current() {
+    public function current(): int {
 		//return current($this->_data);
         return $this->_data[$this->_position];
     }
 
-    public function key() {
+    public function key(): int {
 		//return key($this->_data);
         return $this->_position;
     }
 
-    public function next() {
+    public function next(): int {
 		//next($this->_data);
         ++$this->_position;
     }
 
-    public function valid() {
+    public function valid(): bool {
 		//return !is_null(key($this->_data));
 		return isset($this->_data[$this->_position]);
     }
 
-	public function add($obj) {
+	public function add($obj): self {
 		$this->_data[] = $obj;
+		return $this;
 	}
 
-	public function append($objects) {
+	public function append(array $objects): self {
 		foreach($objects as $object){
 			$this->add($object);
 		}
+		return $this;
 	}
 
-	public function remove($key) {
+	public function remove(int $key): self {
 		if (isset($this->_data[$key])) {
 			/*$object = &$this->_data[$key];
 			unset($object);*/
@@ -69,25 +72,27 @@ class Collection implements Iterator {
 		}
 
 		$this->_data = $temp;
-
+		return $this;
 	}
 
-	public function clear() {
-		$this->_data = array();
+	public function clear(): self {
+		$this->_data = [];
+		return $this;
 	}
 
-	public function item($key) {
-		if (isset($this->_data[$key]))
+	public function item(int $key) {
+		if (isset($this->_data[$key])) {
 			return $this->_data[$key];
+		}
 
 		return null;
 	}
 
-	public function count(){
+	public function count(): int {
 		return count($this->_data);
 	}
 
-	public function getFirstObject(){
+	public function getFirstObject() {
 		return $this->_data[0];
 	}
 
@@ -123,7 +128,7 @@ class Collection implements Iterator {
 	 *
 	 * @param function $callback
 	 */
-	public function each($callback) {
+	public function each(callable $callback) {
 		$result = null;
 		foreach($this->_data as $object) {
 			$result = $callback($object, $result);

@@ -13,6 +13,7 @@ class Expectation {
 	private $count    = 0;
 	private $reached  = false;
 	private $closure  = null;
+	private $since    = null;
 	
 	static private $instances = [];
 	
@@ -149,7 +150,16 @@ class Expectation {
 	private function _reached(): self {
 		$this->count++;
 		$this->reached = $this->count>=$this->times;
+		if ($this->since) {
+			// echo "entra...\n";
+			//$this->since->start();
+		}
 		return $this;
+	}
+	
+	public function since(): self {
+		$this->since = new self;
+		return $this->since;
 	}
 	
 	public function getCount(): int {

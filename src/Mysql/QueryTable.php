@@ -239,10 +239,14 @@ class QueryTable {
 		
 	}
 	
-	public function select(array $params = []) {
+	public function select(array $params = [], string $className = null, array $classParams = []): array {
 		$this->_parseSelectParameters($params);
 		$sql = $this->getSelectSQL();
-		return $this->_connection->getData($sql);
+		return $this->_connection->getData($sql, $className, $classParams);
+	}
+	
+	public function fetchObjects(string $className, array $classParams = [], array $params = []) {
+		return $this->select($params, $className, $classParams);
 	}
 	
 	public function delete() {

@@ -1,7 +1,7 @@
 <?php
 namespace salodev\SSH;
 
-use salodev\ClientStream;
+use salodev\IO\ClientStream;
 use Exception;
 
 class CommandStream extends ClientStream {

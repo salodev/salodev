@@ -2,7 +2,7 @@
 namespace salodev;
 
 class Timer {
-	static public function TimeOut($fn, $useconds) {
+	static public function TimeOut(callable $fn, int $useconds): int {
 		$currentTime = microtime(true);
 		$timeToStart = $currentTime + ($useconds/1000);
 		$taskIndex = Worker::AddTask(function($taskIndex) use ($timeToStart, $fn) {
@@ -13,7 +13,8 @@ class Timer {
 		}, true, "{$useconds}us TIMED OUT TASK");
 		return $taskIndex;
 	}
-	static public function Interval($fn, $useconds) {
+	
+	static public function Interval(callable $fn, int $useconds): int {
 		$baseTime = microtime(true);
 		$counter = 0;
 		$taskIndex = Worker::AddTask(function($taskIndex) use ($fn, $baseTime, &$counter, $useconds) {
@@ -24,7 +25,8 @@ class Timer {
 		}, true, "INTERVAL TASK");
 		return $taskIndex;
 	}
-	static public function Delete($taskIndex){
+	
+	static public function Delete(int $taskIndex): void {
 		return Worker::RemoveTask($taskIndex);
 	}
 }

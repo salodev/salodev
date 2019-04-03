@@ -1,0 +1,44 @@
+<?php
+
+namespace salodev\Pli\Tokens;
+use salodev\Pli\ComputingEngine;
+use Exception;
+
+class Expression extends Token {
+	
+	public function parse(bool $evaluate = false): bool {
+		$matched = false;
+		while($this->eatExpression($evaluate)) {
+			$matched = true;
+		}
+		return $matched;
+	}
+	
+	public function eatExpression(bool $evaluate): bool {
+		$matched = false;
+		foreach([
+			Math\Integer::class,
+			VariableRead::class,
+			Addition::class,
+			Subtraction::class,
+			Multiplication::class,
+			Division::class,
+			ParenthesisExpression::class,
+			UserInput::class,
+		] as $tokenClass) {
+			$t = $this->token($tokenClass);
+			$t->setValue($this->_value);
+			if ($t->eat($evaluate)) {
+				$matched = true;
+				$this->_value = $t->getValue();
+			}
+			if ($this->isOver()) {
+				break;
+			}
+		}
+		if (!$matched) {
+			return false;
+		}
+		return true;
+	}
+}
