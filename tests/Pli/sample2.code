@@ -1,0 +1,9 @@
+nombre = $("dime tu nombre: ")
+
+if (nombre == "salomon") {
+	¡("no te creo")
+} else {
+	¡("hola ")
+	¡(nombre)
+}
+¡("\n")

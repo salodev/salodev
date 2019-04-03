@@ -35,13 +35,20 @@ echo "Reached count: {$ex->getCount()}\n";
 class Host {
 	
 	private $handshaked = false;
+	private $guess = null;
 	
 	public function receive(Guess $guess) {
+		$this->guess = $guess;
 		$guess->doHandshake($this);
 	}
 	
 	public function doHandshake() {
 		$this->handshaked = true;
+		$this->meetData();
+	}
+	
+	public function meetData() {
+		$this->guess->data = 'my data';
 	}
 }
 
@@ -51,7 +58,7 @@ class Guess {
 	}
 }
 
-Expectation::Create(Guess::class, 'doHandshake');
+Expectation::Create(Guess::class, 'doHandshake'); //->since()->setClass(Host::class)->setMethod('meetData');
 
 (new Host)->receive(new Guess);
 
