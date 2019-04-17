@@ -9,11 +9,11 @@ class Validator {
 	private $_value = null;
 	private $_lastErrorMessage = null;
 	
-	static public function Create(array $data) {
+	static public function Create(array $data): self {
 		return new self($data);
 	}
 	
-	static public function Value($value) {
+	static public function Value($value): self {
 		$v = new self([], 'Value', $value);
 		return $v;
 	}
@@ -24,7 +24,12 @@ class Validator {
 		$this->_value = $value;
 	}
 	
-	public function with($fieldName) {
+	public function setValue($value): self {
+		$this->_value = $value;
+		return $this;
+	}
+	
+	public function with($fieldName): self {
 		if (!is_string($fieldName) || !strlen($fieldName)) {
 			throw new Exception('Field name must be string');
 		}
@@ -33,7 +38,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function required($errorMessage = null) {
+	public function required(string $errorMessage = null): self {
 		if (count($this->_data)) {
 			if (!array_key_exists($this->_fieldName, $this->_data)) {
 				throw new Exception($errorMessage ?? "'{$this->_fieldName}' does not exist.");
@@ -45,21 +50,21 @@ class Validator {
 		return $this;
 	}
 	
-	public function filled($errorMessage = null) {
+	public function filled(string $errorMessage = null): self {
 		if ($this->_value === null || $this->_value === '') {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' value is empty.");
 		}
 		return $this;
 	}
 	
-	public function numeric($errorMessage = null) {
+	public function numeric(string $errorMessage = null): self {
 		if (!is_numeric($this->_value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a valid number.");
 		}
 		return $this;
 	}
 	
-	public function positive($errorMessage = null) {
+	public function positive(string $errorMessage = null): self {
 		$this->numeric($errorMessage);
 		if ($this->_value<0) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be positive number.");
@@ -67,7 +72,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function integer($errorMessage = null) {
+	public function integer(string $errorMessage = null): self {
 		$this->numeric($errorMessage);
 		if (!is_integer($this->_value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be integer number.");
@@ -75,7 +80,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function nonZero($errorMessage = null) {
+	public function nonZero(string $errorMessage = null): self {
 		$this->numeric($errorMessage);
 		if ($this->_value===0) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must not be zero.");
@@ -83,14 +88,14 @@ class Validator {
 		return $this;
 	}
 	
-	public function boolean($errorMessage = null) {
+	public function boolean(string $errorMessage = null): self {
 		if (!is_bool($this->_value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a boolean value");
 		}
 		return $this;
 	}
 	
-	public function booleanTrue($errorMessage = null) {
+	public function booleanTrue(string $errorMessage = null): self {
 		$this->boolean($errorMessage);
 		if ($this->_value!==true) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be TRUE boolean value");
@@ -98,7 +103,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function booleanFalse($errorMessage = null) {
+	public function booleanFalse(string $errorMessage = null): self {
 		$this->boolean($errorMessage);
 		if ($this->_value!==true) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be FALSE boolean value");
@@ -106,7 +111,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function date($errorMessage = null) {
+	public function date(string $errorMessage = null): self {
 		@list($m, $d, $y) = explode('-', date('m-d-Y', strtotime($this->_value)));
 		if (!checkdate($m/1, $d/1, $y/1)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a valid date");
@@ -114,7 +119,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function dateDMY($errorMessage = null) {
+	public function dateDMY(string $errorMessage = null): self {
 		@list($d, $m, $y) = explode('-', str_replace('/', '-', $this->_value));
 		if (!checkdate($m/1, $d/1, $y/1)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a valid date");
@@ -122,7 +127,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function dateYMD($errorMessage = null) {
+	public function dateYMD(string $errorMessage = null): self {
 		@list($y, $m, $d) = explode('-', str_replace('/', '-', $this->_value));
 		if (!checkdate($m/1, $d/1, $y/1)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a valid date");
@@ -130,35 +135,35 @@ class Validator {
 		return $this;
 	}
 	
-	public function lt($value, $errorMessage = null) {
+	public function lt($value, string $errorMessage = null): self {
 		if (!($this->_value<$value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be less than {$value}");
 		}
 		return $this;
 	}
 	
-	public function lteq($value, $errorMessage = null) {
+	public function lteq($value, string $errorMessage = null): self {
 		if (!($this->_value<=$value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be less than or equal to {$value}");
 		}
 		return $this;
 	}
 	
-	public function gt($value, $errorMessage = null) {
+	public function gt($value, string $errorMessage = null): self {
 		if (!($this->_value>$value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be greather than {$value}");
 		}
 		return $this;
 	}
 	
-	public function gteq($value, $errorMessage = null) {
+	public function gteq($value, string $errorMessage = null): self {
 		if (!($this->_value>=$value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be greather than or equal to {$value}");
 		}
 		return $this;
 	}
 	
-	public function allFilled($errorMessage = null) {
+	public function allFilled(string $errorMessage = null): self {
 		foreach($this->_data as $name => $value) {
 			if ($value === null || $value === '') {
 				throw new Exception($errorMessage ?? "'{$name}' is empty. Must be filled");
@@ -167,7 +172,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function checkPresent(array $nameList, $errorMessage) {
+	public function checkPresent(array $nameList, string $errorMessage): self {
 		foreach($nameList as $fieldName) {
 			if (!array_key_exists($fieldName, $this->_data)) {
 				throw new Exception($errorMessage ?? "'{$fieldName}' is not present.");
@@ -180,7 +185,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function in(array $values, $errorMessage = null) {
+	public function in(array $values, string $errorMessage = null): self {
 		if (!in_array($this->_value, $values)) {
 			$strValues = implode(', ', $values);
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be in {$strValues}.");
@@ -188,7 +193,7 @@ class Validator {
 		return $this;
 	}
 	
-	public function notIn(array $values, $errorMessage = null) {
+	public function notIn(array $values, string $errorMessage = null): self {
 		if (in_array($this->_value, $values)) {
 			$strValues = implode(', ', $values);
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' can not be one of {$strValues}.");
@@ -196,35 +201,37 @@ class Validator {
 		return $this;
 	}
 	
-	public function minLength(int $length, $errorMessage = null) {
+	public function minLength(int $length, string $errorMessage = null): self {
 		if (!(strlen($this->_value)>=$length)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must have at least {$length} characters.");
 		}
 		return $this;
 	}
 	
-	public function numberAndLetteres($errorMessage = null) {
+	public function numberAndLetteres(string $errorMessage = null): self {
 		if (!preg_match('/^[\pL0-9\ ]*$/iu', $this->_value)) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be only numbers or letteres");
 		}
 		return $this;
 	}
 	
-	public function min($value, $errorMessage = null) {
+	public function min($value, string $errorMessage = null): self {
 		$this->numeric($errorMessage);
 		if ($this->_value < $value) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be greather than or equals to {$value}");
 		}
+		return $this;
 	}
 	
-	public function max($value, $errorMessage = null) {
+	public function max($value, string $errorMessage = null): self {
 		$this->numeric($errorMessage);
 		if ($this->_value > $value) {
 			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be less than or equals to {$value}");
 		}
+		return $this;
 	}
 	
-	public function range($min, $max, $errorMessage = null) {
+	public function range($min, $max, $errorMessage = null): self {
 		$this->min($min, $errorMessage);
 		$this->max($max, $errorMessage);
 		return $this;

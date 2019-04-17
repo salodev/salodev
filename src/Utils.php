@@ -34,4 +34,8 @@ class Utils {
 	static public function GetRotatedDate(&$date, $glue='-') {
 		return implode($glue, array_reverse(explode($glue, $date)));
 	}
+	
+	static public function Hyphenize($camelCaseString) {
+		return strtolower(preg_replace('/([a-zA-Z])(?=[A-Z0-9])/', '$1-', $camelCaseString));
+	}
 }

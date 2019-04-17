@@ -19,10 +19,10 @@ class Expression extends Token {
 		foreach([
 			Math\Integer::class,
 			VariableRead::class,
-			Addition::class,
-			Subtraction::class,
-			Multiplication::class,
-			Division::class,
+			Math\Addition::class,
+			Math\Subtraction::class,
+			Math\Multiplication::class,
+			Math\Division::class,
 			ParenthesisExpression::class,
 			UserInput::class,
 		] as $tokenClass) {

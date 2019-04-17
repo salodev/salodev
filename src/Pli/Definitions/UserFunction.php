@@ -19,7 +19,7 @@ class UserFunction {
 	 *
 	 * @var \salodev\Pli\ComputingEngine 
 	 */
-	private $_compute = null;
+	protected $_compute = null;
 	
 	public function __construct(ComputingEngine $ce) {
 		$this->_compute = $ce;

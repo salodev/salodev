@@ -11,7 +11,7 @@ class ValueExpression extends Token {
 			FunctionCall::class,
 			ParenthesisExpression::class,
 			VariableRead::class,
-			Math\Integer::class,
+			Math\Number::class,
 			StringChar::class,
 			Output::class,
 		] as $tokenClass) {

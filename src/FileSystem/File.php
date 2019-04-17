@@ -64,6 +64,10 @@ class File {
 		return is_executable($this->_path);
 	}
 	
+	public function isFile(): bool {
+		return is_file($this->_path);
+	}
+	
 	public function validateRead() {
 		if (!$this->exists()) {
 			throw new ReadError("File {$this->getSecureFileName()} does not exist.");
@@ -71,6 +75,10 @@ class File {
 		
 		if (!$this->canRead()) {
 			throw new ReadError("Access denied to read file {$this->getSecureFileName()}");
+		}
+		
+		if (!$this->isFile()) {
+			throw new ReadError("{$this->getSecureFileName()} is not a file!");
 		}
 	}
 	
@@ -114,6 +122,12 @@ class File {
 		return $ret;
 	}
 	
+	public function streamAllContent(): void {
+		$this->validateRead();
+		
+		readfile($this->_path);		
+	}
+	
 	public function readAsync(int $bytes = 256): Promise {
 		$deferred = new Deferred();
 		$fs = FileStream::Create($this->_path, 'r');
@@ -133,6 +147,22 @@ class File {
 	public function remove(): self {
 		$this->validateRemove();
 		unlink($this->_path);
+		return $this;
+	}
+	
+	public function moveTo(string $targetFullPath, bool $createDirs = false): self {
+		if ($createDirs) {
+			$dirName = dirname($targetFullPath);
+			if (!is_dir($dirName)) {
+				mkdir($dirName, 0775, true);
+			}
+		}
+		$return = rename($this->_path, $targetFullPath);
+		if (!$return) {
+			throw new Error('Unable move to destination');
+		}
+		$this->_path = $targetFullPath;
+		return $this;
 	}
 	
 	public function canRemove(): bool {

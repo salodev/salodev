@@ -101,7 +101,7 @@ class Connection {
 		$resource = $this->connect();
 		if ($this->logFile) {
 			$sql = trim($sql);
-			@file_put_contents($this->logFile, /*date('Y-m-d H:i:s') .*/ "\n{$sql};\n", FILE_APPEND);
+			@file_put_contents($this->logFile, /*date('Y-m-d H:i:s') .*/ "\n($this->_name) {$sql};\n", FILE_APPEND);
 		}
 		$this->_autoAddLock($sql);
 		$result = $resource->query($sql);
