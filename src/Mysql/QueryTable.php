@@ -303,6 +303,11 @@ class QueryTable {
 					}
 					$this->limits($value[0], $value[1]);
 					break;
+				case 'filters':
+					foreach($value as $fName => $fValue) {
+						$this->filter($fName, $fValue);
+					}
+					break;
 				case 'columns':
 					if (!is_array($value)) {
 						throw new Exception('Incorrect columns value');
@@ -314,7 +319,7 @@ class QueryTable {
 							$this->like($name, $value['like']);
 							break;
 						}
-						throw new Exception('Incorrect \'like\' value filter');
+						throw new \Exception('Incorrect \'like\' value filter');
 					}
 					$this->filter($name, $value);
 					break;
