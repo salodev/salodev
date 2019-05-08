@@ -231,9 +231,16 @@ class Validator {
 		return $this;
 	}
 	
-	public function range($min, $max, $errorMessage = null): self {
+	public function range($min, $max, string $errorMessage = null): self {
 		$this->min($min, $errorMessage);
 		$this->max($max, $errorMessage);
+		return $this;
+	}
+	
+	public function email(string $errorMessage = null): self {
+		if (!filter_var($this->_value, FILTER_VALIDATE_EMAIL)) {
+			throw new Exception($errorMessage ?? "'{$this->_fieldName}' must be a valid email address");
+		}
 		return $this;
 	}
 }

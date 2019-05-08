@@ -49,6 +49,12 @@ class Connection {
 	private $_atLeastOneErrorMessage = null;
 	
 	/**
+	 *
+	 * @var string 
+	 */
+	private $_exceptionClass = Exception::class;
+	
+	/**
 	 * 
 	 * @var string
 	 */
@@ -117,11 +123,12 @@ class Connection {
 		$this->_lastResult = $result;
 		
 		if ($this->_atLeastOne) {
-			if (!$this->getAffectedRows()) {
-				throw new Exception($this->_atLeastOneErrorMessage);
-			}
 			$this->_atLeastOne = false;
 			$this->_atLeastOneErrorMessage = null;
+			if (!$this->getAffectedRows()) {
+				$class = $this->_exceptionClass;
+				throw new $class($this->_atLeastOneErrorMessage);
+			}
 		}
 		
 		return $result;
@@ -355,9 +362,10 @@ class Connection {
 		return $row['newDate'];
 	}
 	
-	public function atLeastOne(string $errorMessage) {
+	public function atLeastOne(string $errorMessage, string $exceptionClass = Exception::class) {
 		$this->_atLeastOne = true;
 		$this->_atLeastOneErrorMessage = $errorMessage;
+		$this->_exceptionClass = $exceptionClass;
 	}
 	
 	private function _autoAddLock(string $sql): string {

@@ -104,7 +104,7 @@ class Mysql {
 		return static::GetConnection()->addDate($date, $count, $period);
 	}
 	
-	static public function AtLeastOne(string $errorMessage) {
-		return static::GetConnection()->atLeastOne($errorMessage);
+	static public function AtLeastOne(string $errorMessage, string $exceptionClass = \Exception::class) {
+		return static::GetConnection()->atLeastOne($errorMessage, $exceptionClass);
 	}
 }
