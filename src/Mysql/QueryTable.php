@@ -225,7 +225,7 @@ class QueryTable {
 		
 		$columns = [];
 		foreach($set as $column => $value) {
-			$columns[] = $value===null?"{$column} IS NULL":"{$column} = '{$value}'";
+			$columns[] = $value===null?"{$column} = NULL":"{$column} = '{$value}'";
 		}
 		$sqlSet = implode(",\n\t", $columns);
 		
