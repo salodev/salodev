@@ -24,8 +24,10 @@ class Mysql {
 		static::$_defaultConnection = $name;
 	}
 	
-	static public function GetConnection(): Connection {
-		$name = static::$_defaultConnection;
+	static public function GetConnection(string $name = null): Connection {
+		if ($name == null) {
+			$name = static::$_defaultConnection;
+		}
 		if (!isset(static::$_connections[$name])) {
 			throw new Exception("Connection not found: '{$name}'");
 		}
