@@ -11,8 +11,15 @@ class FileInfo {
 		$this->_fileName = $fileName;
 	}
 	
+	public function getResource() {
+		if (!is_resource($this->_resource)) {
+			$this->_resource = finfo_open();
+		}
+		return $this->_resource;
+	}
+	
 	private function getInfo(int $type) {
-		return finfo_file($this->_resource, $this->_fileName, $type);
+		return finfo_file($this->getResource(), $this->_fileName, $type);
 	}
 	
 	public function getMimeType() {
