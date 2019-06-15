@@ -9,10 +9,22 @@ class PrivateKey {
 	private $_passphrase = null;
 	private $_resource = null;
 	
-	public function __construct(File $file, string $passphrase = null) {
+	public function __construct(File $file = null, string $passphrase = null, string $privateKeyContent = null) {
 		$this->_file = $file;
 		$this->_passphrase = $passphrase;
-		$this->generate();
+		if ($privateKeyContent === null) {
+			$this->generate();
+		} else {
+			$test = openssl_pkey_get_private($privateKeyContent, $passphrase);
+			if ($test===false) {
+				throw new Error('Invalid private key format');
+			}
+			$this->_resource = $test;
+		}
+	}
+	
+	static public function FromString(string $privateKeyContent, string $passphrase = null): self {
+		return new self(null, $passphrase, $privateKeyContent);
 	}
 	
 	public function getFile(): File {

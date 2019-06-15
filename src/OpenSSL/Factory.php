@@ -18,9 +18,14 @@ class Factory {
 			string $organizationName = null, 
 			string $organizationalUnitName = null, 
 			string $commonName = null, 
-			string $emailAddress = null
+			string $emailAddress = null,
+			string $privateKeyContent = null
 	): array {
-		$privateKey = new PrivateKey(new File('')); 
+		if ($privateKeyContent !== null) {
+			$privateKey = PrivateKey::FromString($privateKeyContent);
+		} else {
+			$privateKey = new PrivateKey(new File('')); 
+		}
 		$csr = new CSR([
 			'commonName'             => $commonName,
 			'countryName'            => $countryName, 
