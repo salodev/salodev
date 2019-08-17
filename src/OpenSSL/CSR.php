@@ -38,4 +38,8 @@ class CSR {
 		openssl_csr_export($this->_resource, $out);
 		return $out;
 	}
+	
+	static public function parse(string $content): array {
+		return openssl_csr_get_subject($content, false);
+	}
 }

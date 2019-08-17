@@ -210,7 +210,7 @@ class QueryTable {
 		}
 		$columns = [];
 		foreach($this->_eqFilters as $column => $value) {
-			$columns[] = $value===null?"{$column} = NULL":"{$column} = '{$value}'";
+			$columns[] = $value===null?"`{$column}` = NULL":"`{$column}` = '{$value}'";
 		}
 		return "INSERT INTO {$this->_name} SET \n" . implode(",\n\t", $columns);
 	}

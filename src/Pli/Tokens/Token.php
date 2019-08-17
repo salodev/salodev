@@ -46,8 +46,20 @@ abstract class Token {
 	public function eatSpaces(): bool {
 		return $this->_computingEngine->eatSpaces();
 	}
-	public function eatUntil(string $string): bool {
-		return $this->_computingEngine->eatUntil($string);
+	public function eatUntil(string $string, &$foundString): bool {
+		return $this->_computingEngine->eatUntil($string, $foundString);
+	}
+	
+	public function eatWord($delimiter = ' '): string {
+		return $this->_computingEngine->eatWord($delimiter);
+	}
+	
+	public function eatExpectedWord(string $word): bool {
+		return $this->_computingEngine->eatExpectedWord($word);
+	}
+	
+	public function eatChars(string $chars): string {
+		return $this->_computingEngine->eatChars($chars);
 	}
 	
 	public function eatAny(): string {
