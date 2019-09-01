@@ -82,8 +82,8 @@ class Mysql {
 		return static::GetConnection()->select($tableName, $wheres, $fieldList);
 	}
 
-	static public function Table($name): QueryTable {
-		return static::GetConnection()->table($name);
+	static public function Table(string $name, string $alias = null): QueryTable {
+		return static::GetConnection()->table($name, $alias);
 	}
 	
 	static public function Transaction(): bool {

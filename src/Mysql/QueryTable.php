@@ -7,6 +7,7 @@ use salodev\Mysql\QueryException;
 class QueryTable {
 	private $_connection;
 	private $_name;
+	private $_alias;
 	private $_eqFilters     = [];
 	private $_customFilters = [];
 	private $_useLimits     = false;
@@ -18,9 +19,10 @@ class QueryTable {
 	private $_groupBy       = [];
 	private $_limit         = 100;
 	
-	public function __construct(Connection $connection, string $name) {
+	public function __construct(Connection $connection, string $name, string $alias = null) {
 		$this->_connection = $connection;
 		$this->_name = $name;
+		$this->_alias = $alias;
 	}
 	
 	public function __set($name, $value) {
@@ -175,7 +177,7 @@ class QueryTable {
 		}
 		$sql = "
 			SELECT {$sqlColumnList}
-			FROM {$this->_name}
+			FROM {$this->_name} {$this->_alias}
 			{$sqlInnerJoin}
 			{$sqlLeftJoin}
 			{$sqlWhere}
@@ -271,6 +273,9 @@ class QueryTable {
 		$row = $this->_connection->fetchRow();
 		if ($column) {
 			if (!array_key_exists($column, $row)) {
+				if (!$this->getCountRows()) {
+					return null;
+				}
 				throw new QueryException("Column '{$column}' does not exist.");
 			}
 			return $row[$column];

@@ -316,8 +316,8 @@ class Connection {
 	 * @param type $name
 	 * @return \SG\Mysql\QueryTable
 	 */
-	public function table(string $name): QueryTable {
-		return new QueryTable($this, $name);
+	public function table(string $name, string $alias = null): QueryTable {
+		return new QueryTable($this, $name, $alias);
 	}
 	
 	public function transaction(): bool {
