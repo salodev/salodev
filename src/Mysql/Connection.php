@@ -261,7 +261,6 @@ class Connection {
 		$sql .= "\nWHERE ";
 		$sql .= implode(" AND\n", $sqlFieldsFilter);
 		
-		// die($sql);
 		$this->query($sql);
 		return true;
 	}
@@ -327,6 +326,13 @@ class Connection {
 		}
 		$this->_nestedTransactions++;
 		return true;
+	}
+	
+	public function transactionFn(callable $fn) {
+		$this->transaction();
+		$valor = $fn();
+		$this->commit();
+		return $valor;
 	}
 	
 	public function commit(): bool {

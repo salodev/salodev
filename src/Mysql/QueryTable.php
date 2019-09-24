@@ -82,7 +82,7 @@ class QueryTable {
 	}
 	
 	public function limit($limit): self {
-		$this->_useLimits = true;
+		$this->_useLimits = $limit > 0;
 		$this->_limit = $limit;
 		return $this;
 	}

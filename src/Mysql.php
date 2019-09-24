@@ -90,6 +90,10 @@ class Mysql {
 		return static::GetConnection()->transaction();
 	}
 	
+	static public function TransactionFn(callable $fn) {
+		return static::GetConnection()->transactionFn($fn);
+	}
+	
 	static public function Commit(): bool {
 		return static::GetConnection()->commit();
 	}
