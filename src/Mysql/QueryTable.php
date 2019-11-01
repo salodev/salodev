@@ -54,6 +54,31 @@ class QueryTable {
 		return $this;
 	}
 	
+	public function filtersEq(array $alloweds, array $filters, bool $skipEmpty = true) {
+		foreach($filters as $name => $value) {
+			if ($skipEmpty && empty($value)) {
+				continue;
+			}
+			if (isset($alloweds[$name])) {
+				$this->filter($alloweds[$name], $value);
+			}
+		}
+	}
+	
+	public function orders(array $alloweds, array $orders, string $defaultOrder = null, bool $defaultValue = null) {
+		foreach($orders as $name => $value) {
+			if ($skipEmpty && empty($value)) {
+				continue;
+			}
+			if (isset($alloweds[$name])) {
+				$this->order($alloweds[$name], $value);
+			}
+		}
+		if (empty($orders) && $defaultOrder && $defaultValue!==null) {
+			$this->order($defaultOrder, $defaultValue);
+		}
+	}
+	
 	public function like($fieldName, $fieldValue): self {
 		$fieldName = $this->_refactorColumnName($fieldName);
 		$this->customFilter("{$fieldName} LIKE '%{$fieldValue}%'");
