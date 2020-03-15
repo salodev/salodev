@@ -1,8 +1,12 @@
 <?php
+
 namespace salodev\IO;
+
 use salodev\IO\Exceptions\Socket\ConnectionRefused;
 use salodev\IO\Exceptions\Socket\ConnectionTimedOut;
 use salodev\IO\Exceptions\Socket as SocketException;
+use salodev\IO\Stream;
+
 /**
  * Una abstracción para los consumidores de flujo.
  */
@@ -16,7 +20,7 @@ class ClientSocket extends ClientStream {
 		]);
 	}
 	
-	public function open(array $options = []): self {
+	public function open(array $options = []): Stream {
 		$host = $options['host'] ?? null;
 		$port = $options['port'] ?? null;
 		$timeout = $options['timeout'] ?? 5;
@@ -52,11 +56,6 @@ class ClientSocket extends ClientStream {
 		return fgets($this->_resource, $length);
 	}
 	
-	public function write(string $content, int $length = 0): self {
-		fwrite($this->_resource, $content, $length == 0 ? strlen($content) : $length);
-		return $this;
-	}
-	
 	public function writeAndRead(string $content): string {
 		$this->setBlocking();
 		$this->write($content . "\n");
@@ -65,20 +64,5 @@ class ClientSocket extends ClientStream {
 			$buffer .= $read;
 		}
 		return $buffer;
-	}
-	
-	public function close(): self {
-		fclose($this->_resource);
-		return $this;
-	}
-	
-	public function setBlocking(): self {
-		stream_set_blocking($this->_resource, true);
-		return $this;
-	}
-	
-	public function setNonBlocking(): self {
-		stream_set_blocking($this->_resource, false);
-		return $this;
 	}
 }

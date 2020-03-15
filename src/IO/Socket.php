@@ -1,85 +1,104 @@
 <?php
+
 namespace salodev\IO;
 
+use salodev\Worker;
 use Exception;
 
 class Socket extends Stream {
-    private $resource = null;
-	private $readBuffer = null;
     
-    public function __construct($resource = null) {
-        if ($resource !== null && !is_resource($resource)) {
-            throw new Exception('Parameter given must be null or valid resource');
-        }
-        $this->resource = $resource;
-    }
+	private $readBuffer = null;
+	private $writtenBytes = 0;
 	
-	public function isValidResource() {
-		return ($this->resource !== null && is_resource($this->resource));
+	protected function validateResource() {
+		if (!$this->isValidResource()) {
+			throw new \Exception('Invalid resource. Connection may be closed');
+		}
 	}
 	
-	public function open(array $options = []) {}
+	public function isValidResource(): bool {
+		return ($this->_resource !== null && is_resource($this->_resource));
+	}
+	
+	public function open(array $options = []): Stream {
+		return $this;
+	}
     
-    public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0) {
+    public function create($domain = AF_INET, $type = SOCK_STREAM, $protocol = 0): self {
         $resource = socket_create($domain, $type , $protocol);
         if (!is_resource($resource)) {
             throw new Exception($this->getErrorText(), $this->getLastError());
         }
-        $this->resource = $resource;
+        $this->_resource = $resource;
 		$this->setNonBlocking();
+		return $this;
     }
     
-    public function getLastError() {
-        return socket_last_error($this->resource);
+    public function getLastError(): int {
+        return socket_last_error($this->_resource);
     }
     
     public function getErrorText() {
-        return socket_strerror($this->resource);
+        return socket_strerror($this->getLastError());
     }
     
-    public function setNonBlocking() {
-        socket_set_nonblock($this->resource);
+    public function setNonBlocking(): Stream {
+		$this->validateResource();
+        socket_set_nonblock($this->_resource);
+		return $this;
     }
     
-    public function setBlocking() {
-        socket_set_block($this->resource);
+    public function setBlocking(): Stream {
+		$this->validateResource();
+        socket_set_block($this->_resource);
+		return $this;
     }
     
     public function setOption($level, $name, $val) {
-        socket_set_option($this->resource, $level, $name, $val);
+		$this->validateResource();
+        socket_set_option($this->_resource, $level, $name, $val);
     }
     
-    public function bind($address, $port) {
-        return socket_bind($this->resource, $address, $port);
+    public function bind($address, $port): self {
+		$this->validateResource();
+		if (@!socket_bind($this->_resource, $address, $port)) {
+			throw new \Exception($this->getErrorText(), $this->getLastError());
+		}
+		return $this;
     }
     
-    public function listen($backlog = 0) {
-        return socket_listen($this->resource, $backlog);
+    public function listen($backlog = 0): self {
+		$this->validateResource();
+		if (!socket_listen($this->_resource, $backlog)) {
+			throw new \Exception($this->getErrorText(), $this->getLastError());
+		}
+		return $this;
     }
     
 	/**
 	 * 
 	 * @return \salodev\Socket
 	 */
-    public function accept()/*: Socket*/ {
-        $newResource = socket_accept($this->resource);
+    public function accept() {
+		$this->validateResource();
+        $newResource = socket_accept($this->_resource);
         if (!$newResource) {
             return false;
         }
-        $newSocket = new Socket($newResource);
+        $newSocket = new Socket(['resource' => $newResource]);
 		$newSocket->setNonBlocking();
         return $newSocket;
     }
     
-    public function close() {
-        socket_close($this->resource);
+    public function close(): Stream {
+		$this->validateResource();
+        socket_close($this->_resource);
+		return $this;
     }
     
-    public function read(int $length = 256, int $type = PHP_BINARY_READ) {
-		if (!$this->isValidResource()) {
-			throw new Exception('Invalid socket resource. Connection may be expired.');
-		}
-        return @socket_read($this->resource, $length, $type);
+    public function read(int $length = 256, int $type = PHP_BINARY_READ): string {
+		$this->validateResource();
+        return @socket_read($this->_resource, $length, $type);
     }
 	
 	public function readAll($length, $type = PHP_BINARY_READ) {
@@ -114,13 +133,12 @@ class Socket extends Stream {
 		}, true, 'SOCKET - READ LINE TASK');
     }
     
-    public function write(string $buffer, int $length = 0) {
-		if (!$this->isValidResource()) {
-			throw new Exception('Invalid socket resource. Connection may be expired.');
-		}
+    public function write(string $buffer, int $length = 0): Stream {
+		$this->validateResource();
         if ($length== 0) {
             $length = strlen($buffer);
         }
-        return socket_write($this->resource, $buffer, $length);
+        $this->writtenBytes = socket_write($this->_resource, $buffer, $length);
+		return $this;
     }
 }

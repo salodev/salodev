@@ -1,6 +1,8 @@
 <?php
 namespace salodev\IO;
 
+use salodev\Worker;
+
 class StandardInput extends ClientStream {
 	/**
 	 *
@@ -49,5 +51,10 @@ class StandardInput extends ClientStream {
 				}
 			}
 		}, true, 'READ LINE FROM STANDARD INPUT');
+	}
+	
+	public function close(): Stream {
+		static::$_stream = null;
+		parent::close();
 	}
 }

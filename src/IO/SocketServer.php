@@ -1,6 +1,9 @@
 <?php
 namespace salodev\IO;
 
+use salodev\Timer;
+use salodev\Worker;
+
 use Exception;
 
 class SocketServer {

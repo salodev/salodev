@@ -6,7 +6,7 @@ namespace salodev\IO;
  */
 abstract class ClientStream extends Stream {
 	
-	public function open(array $options = []) {
+	public function open(array $options = []): Stream {
 		$spec = $options['spec'] ?? null;
 		$mode = $options['mode'] ?? null;
 		$this->_resource = fopen($spec, $mode);
@@ -21,7 +21,7 @@ abstract class ClientStream extends Stream {
 		return fgets($this->_resource, $length);
 	}
 	
-	public function write(string $content, int $length = 0): self {
+	public function write(string $content, int $length = 0): Stream {
 		$length = $length == 0 ? strlen($content) : $length;
 		fwrite($this->_resource, $content, $length);
 		return $this;
@@ -32,17 +32,17 @@ abstract class ClientStream extends Stream {
 		return $this->read();
 	}
 	
-	public function close(): self {
+	public function close(): Stream {
 		fclose($this->_resource);
 		return $this;
 	}
 	
-	public function setBlocking(): self {
+	public function setBlocking(): Stream {
 		stream_set_blocking($this->_resource, true);
 		return $this;
 	}
 	
-	public function setNonBlocking(): self {
+	public function setNonBlocking(): Stream {
 		stream_set_blocking($this->_resource, false);
 		return $this;
 	}

@@ -1,6 +1,7 @@
 <?php
 
 namespace salodev\FileSystem;
+
 use salodev\Worker;
 use salodev\IO\FileStream;
 use salodev\Deferred;

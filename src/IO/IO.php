@@ -1,5 +1,8 @@
 <?php
+
 namespace salodev\IO;
+
+use salodev\Worker;
 
 class IO {
 	/**

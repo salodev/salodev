@@ -26,4 +26,9 @@ class StandardOutput extends ClientStream {
 	public function writeLine($content) {
 		return $this->write($content . "\n");
 	}
+	
+	public function close(): Stream {
+		static::$_stream = null;
+		parent::close();
+	}
 }

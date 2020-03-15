@@ -8,6 +8,8 @@
 
 namespace salodev\IO;
 
+use salodev\IO\Exceptions\Cli\Exception;
+
 /**
  * Description of Cli
  *
@@ -36,5 +38,17 @@ class Cli {
 		global $argv;
 		array_shift($argv);
 		return implode(' ', $argv);
+	}
+	
+	static public function getRawParamsArray(int $index = null): array {
+		global $argv;
+		$array = array_shift($argv);
+		if ($index !== null) {
+			if (!isset($array[$index])) {
+				throw new Exception('Param offset not found');
+			}
+			return $array[$index];
+		}
+		return $array;
 	}
 }

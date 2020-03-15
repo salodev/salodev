@@ -9,20 +9,25 @@ use salodev\IO\Exceptions\StreamWaitError;
  */
 abstract class Stream {
 	protected $_resource = null;
+	static private $_allInstances = [];
 	static private $_readResources   = [];
 	static private $_writeResources  = [];
 	static private $_exceptResources = [];
+	
 	public function __construct(array $options = []) {
-		$resource = $options['resource'] ?? null;
-		if (is_resource($resource)) {
-			$this->_resource = $resource;
-		}
-		// if (is_string($resource)) {
-			$this->open($options);
-			if (($options['nonBlocking']??false) || !($options['blocking']??true)) {
-				$this->setNonBlocking(); // by default.
+		if (isset($options['resource'])) {
+			if (!is_resource($options['resource'])) {
+				throw new Exception('Invalid resource');
 			}
-		// }
+			$this->_resource = $options['resource'];
+		}
+
+		$this->open($options);
+		if (($options['nonBlocking']??false) || !($options['blocking']??true)) {
+			$this->setNonBlocking(); // by default.
+		}
+		
+		self::$_allInstances[] = $this;
 	}
 	abstract public function open(array $options = []): self;
 	abstract public function read(int $bytes = 256, int $type = 0): string;
@@ -48,5 +53,26 @@ abstract class Stream {
 		}
 		
 		return $ret;
+	}
+	
+	static public function ClearIntancesList() {
+		self::$_allInstances = [];
+	}
+	
+	/**
+	 * Close all created streams
+	 */
+	static public function CloseAll(): void {
+		foreach(self::$_allInstances as $k => $streamInstance) {
+			/**
+			 * Close conection
+			 */
+			$streamInstance->close();
+			
+			/**
+			 * And remove it from list
+			 */
+			unset(self::$_allInstances[$k]);
+		}
 	}
 }
