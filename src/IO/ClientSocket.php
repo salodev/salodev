@@ -27,10 +27,10 @@ class ClientSocket extends ClientStream {
 		$this->_resource = @fsockopen($host, $port, $errNo, $errString, $timeout);
 		if ($errNo) {
 			if ($errNo == SOCKET_ECONNREFUSED) {
-				throw new ConnectionRefused;
+				throw new ConnectionRefused("Connection to {$host}:{$port} was refused");
 			}
 			if ($errNo == SOCKET_ETIMEDOUT) {
-				throw new ConnectionTimedOut;
+				throw new ConnectionTimedOut("Connection to {$host}:{$port} timed out");
 			}
 			throw new SocketException($errString . " code: {$errNo} " , $errNo);
 		}

@@ -43,7 +43,7 @@ class SimpleServer {
 		$socket->create(AF_INET, SOCK_STREAM, SOL_TCP);
 		
 		if ($socket->bind($address, $port)===false) {
-			static::Log("error en bind()...\n");
+			static::LogError("error en bind()...");
 			return;
 		}
 		register_shutdown_function(function() use ($socket){
@@ -58,7 +58,7 @@ class SimpleServer {
 			if (!$socket->isValidResource()) {
 				break;
 			}
-			$socket->setNonBlocking();
+			// $socket->setNonBlocking();
 			
 			/**
 			 * Read if incoming connection
@@ -87,14 +87,12 @@ class SimpleServer {
 					$connection->write($return . "\n");
 				} catch (Exception $e) {
 					if ($connection->isValidResource()) {
-						static::Log("Uncaught Exception: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
-						static::Log($e->getTraceAsString());
+						static::LogException($e);
 						$connection->write('Uncaught service exception.');
 					}
 				} catch (Error $e) {
 					if ($connection->isValidResource()) {
-						static::Log("Uncaught Error: {$e->getMessage()} at file '{$e->getFile()}' ({$e->getLine()})\n\n");
-						static::Log($e->getTraceAsString());
+						static::LogException($e);
 						$connection->write('Uncaught service error.');
 					}
 				} finally {
