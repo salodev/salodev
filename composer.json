@@ -1,0 +1,18 @@
+{
+	"name": "salojc2006/salodev",
+	"description": "Several common solutions made to my own projects",
+	"type": "library",
+	"homepage": "https://github.com/salojc2006/salodev",
+	"keywords": ["php7", "library", "oop", "socket"],
+	"require": {
+		"php": "^7.1"
+	},
+	"authors": [
+		{
+			"name": "Salomón Córdova",
+			"email": "salojc2006@gmail.com",
+			"homepage": "https://github.com/salojc2006",
+			"role": "Developer"
+		}
+	]
+}

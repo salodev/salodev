@@ -10,16 +10,6 @@ class Socket extends Stream {
 	private $readBuffer = null;
 	private $writtenBytes = 0;
 	
-	protected function validateResource() {
-		if (!$this->isValidResource()) {
-			throw new \Exception('Invalid resource. Connection may be closed');
-		}
-	}
-	
-	public function isValidResource(): bool {
-		return ($this->_resource !== null && is_resource($this->_resource));
-	}
-	
 	public function open(array $options = []): Stream {
 		return $this;
 	}
@@ -54,10 +44,18 @@ class Socket extends Stream {
 		return $this;
     }
     
-    public function setOption($level, $name, $val) {
+    public function setOption($name, $val): self {
 		$this->validateResource();
-        socket_set_option($this->_resource, $level, $name, $val);
+        $ret = socket_set_option($this->_resource, SOL_SOCKET, $name, $val);
+		if ($ret === false) {
+			throw new Exception($this->getErrorText(), $this->getLastError());
+		}
+		return $this;
     }
+	
+	public function setOptionReuseAddressOnBind(bool $value = true): self {
+		return $this->setOption(SO_REUSEADDR, $value ? 1: 0);
+	}
     
     public function bind($address, $port): self {
 		$this->validateResource();
@@ -77,7 +75,7 @@ class Socket extends Stream {
     
 	/**
 	 * 
-	 * @return \salodev\Socket
+	 * @return \salodev\IO\Socket | bool
 	 */
     public function accept() {
 		$this->validateResource();

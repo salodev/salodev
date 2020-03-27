@@ -1,0 +1,22 @@
+<?php
+
+namespace salodev\Pli\CustomLang\Tokens;
+
+class CodeBlock extends Token {
+	
+	public function parse(bool $evaluate = false): bool {
+		$this->eatSpaces();
+		if (!$this->eatString('{')) {
+			return false;
+		}
+		$this->eatSpaces();
+		$t = $this->token(Code::class);
+		$t->eatExpected($evaluate);
+		
+		$this->eatSpaces();
+		$this->eatExpectedString('}');
+		
+		return true;
+	}
+	
+}

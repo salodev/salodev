@@ -4,7 +4,7 @@ function function() {
 }
 
 function titulo() {
-	¡("esto es un tittulo....\n")
+	¡("esto es un titulo....\n")
 	return 1
 }
 
@@ -27,24 +27,24 @@ function main() {
 	titulodos()
 	¡("\n")
 
-	edad = read(texto = "tu edad, por favor: ")
+	edad = read("tu edad, por favor: ")
 
 	if (edad>18) {
 		if (edad > 30) {
 			if (edad < 50) {
-				write(texto="deberias estar recibido, o tener hijos, o algo")
+				write("deberias estar recibido, o tener hijos, o algo")
 			} else {
-				write(texto="tienes nietos?")
+				write("tienes nietos?")
 			}
 		} else {
-			write(texto = "eres mayor de edad")
+			write("eres mayor de edad")
 		}
 
 	} else {
-		write(texto = "no puedes fumar!")
+		write("no puedes fumar!")
 	}
-	¡("\n")
+	!("\n")
 	return 1
 }
 
-main()
+write("tu edad, por favor: ")

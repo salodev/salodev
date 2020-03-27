@@ -1,8 +1,9 @@
 #!/usr/bin/php
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/autoload.php');
-use salodev\Thread;
-declare(ticks = 1);
+
+use salodev\Pcntl\Thread;
+
 Thread::SetSignalHandler(SIGINT, function($signo) {
 	echo "SIGNAL RECEIVED: {$signo}\n";
 	die();

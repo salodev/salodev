@@ -15,7 +15,6 @@ use Exception;
 /**
  * It allows signal handlers run!
  */
-declare(ticks = 1); 
 
 class SimpleServer {
 	
@@ -27,32 +26,27 @@ class SimpleServer {
 	static public function Listen(string $address, int $port, callable $onRequest, int $usleep = 1000): void {
 		
 		/**
-		 *  It makes cancellabe by CTRL+C signal
-		 */
-		Thread::SetSignalHandler(SIGINT, function($signo) {
-			die();
-		});
-		
-		/**
 		 * For long time run
 		 */
 		set_time_limit(0);
 		
 		$socket = new Socket();
-		// static::$socket = $socket;
+		
 		$socket->create(AF_INET, SOCK_STREAM, SOL_TCP);
+		
+		/**
+		 * Reusing address prevent error on restart service.
+		 */
+		$socket->setOptionReuseAddressOnBind();
 		
 		if ($socket->bind($address, $port)===false) {
 			static::LogError("error en bind()...");
 			return;
 		}
-		register_shutdown_function(function() use ($socket){
-			try {
-				$socket->close();
-			} catch (\Exception $e) {
-				// do nothing
-			}
-		});
+		
+		/**
+		 * Now wait for incomming connectios.
+		 */
 		$socket->listen();
 		do {
 			if (!$socket->isValidResource()) {
@@ -86,7 +80,7 @@ class SimpleServer {
 					 */
 					$connection->write($return . "\n");
 				} catch (Exception $e) {
-					if ($connection->isValidResource()) {
+					if ($connection->isValidResource()) {						
 						static::LogException($e);
 						$connection->write('Uncaught service exception.');
 					}

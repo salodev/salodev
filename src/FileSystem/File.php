@@ -126,7 +126,7 @@ class File {
 	public function streamAllContent(): void {
 		$this->validateRead();
 		
-		readfile($this->_path);		
+		readfile($this->_path);
 	}
 	
 	public function readAsync(int $bytes = 256): Promise {

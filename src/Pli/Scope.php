@@ -1,7 +1,7 @@
 <?php
 
 namespace salodev\Pli;
-use salodev\Pli\Definitions\UserFunction;
+
 use Exception;
 
 class Scope {

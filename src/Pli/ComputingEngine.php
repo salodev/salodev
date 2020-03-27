@@ -1,9 +1,7 @@
 <?php
 
 namespace salodev\Pli;
-use salodev\Pli\Definitions\UserFunction;
-use salodev\Pli\Tokens\Token;
-use salodev\Pli\Tokens\Code;
+
 use Exception;
 
 class ComputingEngine {
@@ -16,7 +14,7 @@ class ComputingEngine {
 	
 	public $value = null;
 	
-	public function __construct(string $tokenClass = Code::class, Scope $globalScope = null) {
+	public function __construct(string $tokenClass = Token::class, Scope $globalScope = null) {
 		$this->_tokenClass = $tokenClass;
 		if ($globalScope === null) {
 			$this->_globalScope = new Scope;
@@ -31,20 +29,26 @@ class ComputingEngine {
 		return substr($this->_input, $this->_offset, $count);
 	}
 	
-	public function eatString(string $string): bool {
+	public function eatString(string $string, bool $matchCase = true): bool {
 		$len = strlen($string);
 		if ($this->_offset + $len > strlen($this->_input)) {
 			return false;
 		}
 		$found = $this->readChars($len);
-		if ($found === $string) {
-			return $this->_increase(strlen($string));
+		if ($matchCase){
+			if ($found === $string) {
+				return $this->_increase(strlen($string));
+			}
+		} else {
+			if (strcasecmp($found, $string)===0) {
+				return $this->_increase(strlen($string));
+			}
 		}
 		return false;
 	}
 	
-	public function eatExpectedString(string $string): bool {
-		if (!$this->eatString($string)) {
+	public function eatExpectedString(string $string, bool $matchCase = true): bool {
+		if (!$this->eatString($string, $matchCase)) {
 			$this->raiseError("Expected: '{$string}'");
 			return false;
 		}
@@ -62,14 +66,41 @@ class ComputingEngine {
 		return $matched;
 	}
 	
-	public function eatUntil(string $string): bool {
+	public function eatUntil(string $string, string &$foundString): bool {
+		$foundString = '';
 		while(!$this->eatString($string)) {
-			$this->_increase(1);
+			$eated = $this->eatAny();
+			$foundString .= $eated;
 			if ($this->isOver()) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public function eatWord($delimiter = ' '): string {
+		$this->eatUntil($delimiter, $word);
+		return $word;
+	}
+	
+	public function eatExpectedWord(string $word): bool {
+		$this->eatExpectedString($word);
+		if (!$this->eatSpaces()) {
+			$this->raiseError('Expected end of word or space');
+		}
+		return true;
+	}
+	
+	public function eatChars(string $charList): string {
+		$foundChars = '';
+		while ($char = $this->readChars(1)) {			
+			if (strpos($charList, $char)===false) {
+				break;
+			}
+			$this->_increase(1);
+			$foundChars .= $char;
+		}
+		return $foundChars;
 	}
 	
 	public function eatAny(): string {
@@ -103,16 +134,18 @@ class ComputingEngine {
 		throw new Exception("{$text} at line {$this->getLine()}, offset {$this->getOffset()}.");
 	}
 	
-	public function evaluate(string $input, array $variables = []) {
+	public function evaluate(string $input, array $variables = [], bool $twoSteps = false) {
 		$this->_input = $input;
 		$this->_localScope->storeVariables($variables);
-		$this->run(false);
-		$this->_offset = 0;
+		if ($twoSteps) {
+			$this->run(false);
+			$this->_offset = 0;
+		}
 		return $this->run(true);
 	}
 	
 	public function run(bool $evaluate = true) {
-		while($this->_offset < strlen($this->_input) && $this->runTokens($evaluate)) {}
+		$this->runTokens($evaluate);
 		
 		$this->eatSpaces();
 		
@@ -167,6 +200,17 @@ class ComputingEngine {
 	public function defineFunction(UserFunction $functionDefinition) {
 		try {
 			$this->_globalScope->defineFunction($functionDefinition);
+		} catch (Exception $e) {
+			$this->raiseError($e->getMessage());
+		}
+	}
+	
+	public function defineFunctionCb(string $name, callable $callback) {
+		try {
+			$def = new Definitions\NativeFunctionByCb($this);
+			$def->name = $name;
+			$def->setCallback($callback);
+			$this->_globalScope->defineFunction($def);
 		} catch (Exception $e) {
 			$this->raiseError($e->getMessage());
 		}

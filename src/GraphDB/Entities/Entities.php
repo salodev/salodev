@@ -7,9 +7,9 @@ abstract class Entities {
 	
 	abstract static public function GetEntityName(): string;
 	
-	static public function Create(int $ownerID, int $containerID, array $data = []): int {
+	static public function Create(int $ownerId, int $containerId, array $data = []): int {
 		$type = static::GetEntityName();
-		return Graphs::Create($type, $ownerID, $containerID, $data);
+		return Graphs::Create($type, $ownerId, $containerId, $data);
 	}
 	
 	static public function GetList(array $options = []) : array {
@@ -17,10 +17,10 @@ abstract class Entities {
 		return Graphs::GetList($options);
 	}
 	
-	static public function GetComments($graphID) {
+	static public function GetComments($graphId) {
 		return Comments::GetList([
 			'relationTo' => [
-				'containedOn' => $graphID,
+				'containedOn' => $graphId,
 			],
 		]);
 	}

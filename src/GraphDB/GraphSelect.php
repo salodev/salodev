@@ -18,11 +18,6 @@ class GraphSelect {
 		return $this;
 	}
 	
-	public function containerID(int $value): self {
-		$this->_options['containerID'] = $value;
-		return $this;
-	}
-	
 	public function type(string $value): self {
 		$this->_options['type'] = $value;
 		return $this;
@@ -43,13 +38,13 @@ class GraphSelect {
 		return $this;
 	}
 	
-	public function relationTo(string $name, int $graphID): self {
-		$this->_options['relationTo'][$name] = $graphID;
+	public function relationTo(string $name, int $graphId): self {
+		$this->_options['relationTo'][$name] = $graphId;
 		return $this;
 	}
 	
-	public function relationFrom(string $name, int $graphID): self {
-		$this->_options['relationFrom'][$name] = $graphID;
+	public function relationFrom(string $name, int $graphId): self {
+		$this->_options['relationFrom'][$name] = $graphId;
 		return $this;
 	}
 	

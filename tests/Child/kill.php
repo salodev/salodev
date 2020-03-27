@@ -1,11 +1,10 @@
 #!/usr/bin/php
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/autoload.php');
-use salodev\Thread;
+use salodev\Pcntl\Thread;
 use salodev\Implementations\SimpleServer;
-declare(ticks = 1);
+
 $child = Thread::Fork(function() {
-	declare(ticks = 1);
 	Thread::SetSignalHandler([SIGINT], function() {
 		echo "KILLED....";
 		sleep(1);

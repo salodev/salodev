@@ -22,6 +22,10 @@ try {
 	}
 	$formula = readline('Introduzca la fórmula de cálculo: ');
 	$ce = new \salodev\Pli\ComputingEngine(salodev\Pli\Tokens\Math\Expression::class);
+	
+	$ce->defineFunctionCb('saludo', function($nombre) {
+		return 'Hola ' . $nombre;
+	});
 	// $ce->defineFunction(new \salodev\Pli\Definitions\NativeFunctions\FunctionIF());
 	foreach($precios as &$datos) {
 		$datos[1] = $ce->evaluate($formula, ['precio'=>$datos[1]]);

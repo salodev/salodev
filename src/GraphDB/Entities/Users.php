@@ -8,10 +8,10 @@ class Users extends Entities {
 		return 'user';
 	}
 	
-	static public function GetInvolvedBoards($graphID) {
+	static public function GetInvolvedBoards($graphId) {
 		return Boards::GetList([
 			'relationFrom' => [
-				'involved' => $graphID,
+				'involved' => $graphId,
 			],
 		]);
 	}
@@ -40,10 +40,10 @@ class Users extends Entities {
 		]);
 	}
 	
-	static public function GetComments($graphID) {
+	static public function GetComments($graphId) {
 		return Comments::GetList([
 			'relationTo' => [
-				'owner' => $graphID,
+				'owner' => $graphId,
 			],
 		]);
 	}
