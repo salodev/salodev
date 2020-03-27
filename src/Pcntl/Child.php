@@ -45,12 +45,22 @@ class Child {
 		return pcntl_wtermsig($this->_status);
 	}
 	
-	public function sendSignal($sig): bool {
-		return posix_kill($this->_pid, $sig);
+	public function sendSignal($sig): self {
+		$return = posix_kill($this->_pid, $sig);
+		if ($return === false) {
+			$errorCode = posix_get_last_error();
+			$errorMessage = posix_strerror($errorCode);
+			throw new \Excetion($errorMessage, $errorCode);
+		}
+		return $this;
 	}
 	
-	public function kill(): bool {
+	public function kill(): self {
 		return $this->sendSignal(SIGKILL);
+	}
+	
+	public function stop(): self {
+		return $this->sendSignal(SIGINT);
 	}
 	
 	public function isRunning(): bool {

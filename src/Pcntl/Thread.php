@@ -49,7 +49,7 @@ abstract class Thread {
 	}
 	
 	static public function SetSignalHandler($signos, callable $fn) {
-		declare(ticks = 1);
+		pcntl_async_signals(true);
 		if (!is_array($signos)) {
 			$signos = array($signos);
 		}

@@ -28,7 +28,19 @@ abstract class Stream {
 		}
 		
 		self::$_allInstances[] = $this;
+		
 	}
+	
+	protected function validateResource() {
+		if (!$this->isValidResource()) {
+			throw new \Exception('Invalid resource. Connection may be closed');
+		}
+	}
+	
+	public function isValidResource(): bool {
+		return ($this->_resource !== null && is_resource($this->_resource));
+	}
+	
 	abstract public function open(array $options = []): self;
 	abstract public function read(int $bytes = 256, int $type = 0): string;
 	abstract public function write(string $content, int $length = 0): self;

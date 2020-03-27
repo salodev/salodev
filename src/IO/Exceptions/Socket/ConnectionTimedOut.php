@@ -1,6 +1,6 @@
 <?php
 
-namespace salodev\Exceptions\Socket;
-use salodev\Exceptions\Socket as SocketException;
+namespace salodev\IO\Exceptions\Socket;
+use salodev\IO\Exceptions\Socket as SocketException;
 
 class ConnectionTimedOut extends SocketException {}
