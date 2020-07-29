@@ -1,0 +1,14 @@
+{
+    "name": "salodev/utils",
+    "description": "Utilities for php",
+    "keywords": ["uttilities"],
+	"require": {
+		"php": "^7.2.5"
+	},
+	"autoload": {
+        "psr-4": { 
+			"salodev\\": "src/" 
+		},
+		"classmap": ["src/"]
+    }
+}
